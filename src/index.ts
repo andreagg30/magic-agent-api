@@ -8,6 +8,7 @@ import express, {
 import otpRouter from "./routes/otps.js";
 import userRouter from "./routes/users.js";
 import sessionRouter from "./routes/sessions.js";
+import formRouter from "./routes/forms.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import emailService from "./services/mails.js";
@@ -47,6 +48,7 @@ app.use("/api/users", userRouter);
 app.use("/api/otp", otpRouter);
 app.use("/api/sessions", sessionRouter);
 app.use("/api/passwords", passwordRouter);
+app.use("/api/forms", formRouter);
 
 // Global error handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
