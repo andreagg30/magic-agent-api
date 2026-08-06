@@ -4,12 +4,15 @@ import crmService from "./crm.js";
 
 const saveForm = async ({
   payload,
+  images,
   client,
 }: {
   payload: Record<string, unknown>;
+  images: Express.Multer.File[];
   client: PoolClient;
 }) => {
   const sections = Array.isArray(payload.sections) ? payload.sections : [];
+  const imagesByBlockId = new Map(images.map((file) => [file.originalname, file]));
 
   for (const section of sections) {
     if (!section || typeof section !== "object") continue;
@@ -23,34 +26,39 @@ const saveForm = async ({
         question.image &&
         typeof question.image === "object"
       ) {
-        const image = question.image as { src?: string; name?: string; caption?: string; alt?: string };
-        const imageSrc = image.src;
+        const image = question.image as {
+          blockId?: string;
+          src?: string;
+          name?: string;
+          caption?: string;
+          alt?: string;
+        };
         const imageName = image.name || image.caption || image.alt;
-console.log('entra?');
+        const file = image.blockId ? imagesByBlockId.get(image.blockId) : undefined;
 
-        if (typeof imageSrc === "string" && imageSrc.startsWith("blob:") && imageName) {
-          const blobData = await fetch(imageSrc);
-          console.log(blobData, 'blobDatablobDatablobDatablobData');
-          
-          if (!blobData.ok) {
-            throw new Error(`No se pudo descargar la imagen local: ${imageSrc}`);
-          }
-
-          const buffer = Buffer.from(await blobData.arrayBuffer());
+        if (file && imageName) {
           const uploadFolder = "forms";
-          const filename = `${Date.now()}-${imageName}`;
+          const safeName = imageName.replace(/[^a-zA-Z0-9._-]/g, "_");
+          const filename = `${Date.now()}-${safeName}`;
           const uploaded = await crmService.uploadImageToCrm({
             folder: uploadFolder,
             filename,
-            fileBuffer: buffer,
+            fileBuffer: file.buffer,
+            mimeType: file.mimetype,
           });
 
-          question.path = uploaded.path;
-          question.name = uploaded.name;
-          delete question.image;
+          image.src = uploaded.path;
+          image.name = uploaded.name;
+          imagesByBlockId.delete(image.blockId!);
+        } else if (!image.src) {
+          throw new Error(`No se recibió el archivo de la imagen ${image.blockId ?? "sin blockId"}`);
         }
       }
     }
+  }
+
+  if (imagesByBlockId.size) {
+    throw new Error("Se recibieron imágenes que no pertenecen al formulario");
   }
 
   const result = await client.query(
