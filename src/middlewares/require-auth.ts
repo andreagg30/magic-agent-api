@@ -18,7 +18,9 @@ export function requireAuth(
     const accessToken = req.cookies.accessToken;
 
     if (!accessToken) {
-      return res.status(400).json({
+      // La ausencia del access token es un estado de autenticación, no un
+      // request inválido. El cliente usa el 401 para iniciar el refresh.
+      return res.status(401).json({
         message: "tokenMissing",
       });
     }
