@@ -27,7 +27,7 @@ router.post(
   formController.saveForm,
 );
 router.put(
-  "/:id",
+  "/save/:id",
   requireAuth,
   imageUpload.array("images"),
   formController.parseMultipartPayload,
