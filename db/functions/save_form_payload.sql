@@ -48,11 +48,17 @@ BEGIN
                 form_id,
                 name,
                 description,
+                section_validations,
                 position
             ) VALUES (
                 v_form_id,
                 TRIM(v_section->>'name'),
                 NULLIF(v_section->>'description', ''),
+                CASE
+                    WHEN jsonb_typeof(v_section->'sectionValidations') IS NOT NULL
+                        THEN v_section->'sectionValidations'
+                    ELSE NULL
+                END,
                 COALESCE(NULLIF(v_section->>'position', '')::integer, v_section_position)
             ) RETURNING id INTO v_section_id;
 
@@ -159,4 +165,3 @@ BEGIN
     RETURN v_form_id;
 END;
 $$;
---

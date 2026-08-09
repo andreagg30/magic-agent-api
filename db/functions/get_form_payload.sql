@@ -21,6 +21,7 @@ LEFT JOIN LATERAL (
             'id', s.id,
             'name', s.name,
             'description', s.description,
+            'sectionValidations', s.section_validations,
             'position', s.position,
             'questions', COALESCE(qa.questions, '[]'::jsonb)
         ) ORDER BY s.position
@@ -74,4 +75,3 @@ LEFT JOIN LATERAL (
 ) sections ON true
 WHERE f.id = p_form_id;
 $$;
---

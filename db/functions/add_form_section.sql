@@ -2,7 +2,8 @@ CREATE OR REPLACE FUNCTION add_form_section(
     p_form_id UUID,
     p_name TEXT,
     p_description TEXT DEFAULT NULL,
-    p_position INTEGER DEFAULT 0
+    p_position INTEGER DEFAULT 0,
+    p_section_validations JSONB DEFAULT NULL
 )
 RETURNS UUID
 LANGUAGE plpgsql
@@ -14,13 +15,15 @@ BEGIN
         form_id,
         name,
         description,
-        position
+        position,
+        section_validations
     )
     VALUES (
         p_form_id,
         TRIM(p_name),
         p_description,
-        p_position
+        p_position,
+        p_section_validations
     )
     RETURNING id INTO v_section_id;
 
@@ -31,4 +34,3 @@ EXCEPTION
         RAISE EXCEPTION 'El form_id % no existe en forms', p_form_id;
 END;
 $$;
---

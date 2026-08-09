@@ -25,6 +25,7 @@ AS $$
                     'id', s.id,
                     'name', s.name,
                     'description', s.description,
+                    'sectionValidations', s.section_validations,
                     'position', s.position,
                     'questions', COALESCE(
                         (
@@ -85,4 +86,3 @@ AS $$
     WHERE f.id = p_form_id
     GROUP BY f.id;
 $$;
---

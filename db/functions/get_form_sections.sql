@@ -5,6 +5,7 @@ RETURNS TABLE (
     id UUID,
     name TEXT,
     description TEXT,
+    section_validations JSONB,
     position INTEGER,
     created_at TIMESTAMPTZ,
     updated_at TIMESTAMPTZ
@@ -15,6 +16,7 @@ AS $$
         id,
         name,
         description,
+        section_validations,
         position,
         created_at,
         updated_at
@@ -22,4 +24,4 @@ AS $$
     WHERE form_id = p_form_id
     ORDER BY position;
 $$;
---
+

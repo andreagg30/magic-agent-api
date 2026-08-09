@@ -3,6 +3,7 @@ CREATE TABLE form_sections (
   form_id UUID NOT NULL REFERENCES forms(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   description TEXT,
+  section_validations JSONB,
   position INTEGER NOT NULL DEFAULT 0,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
