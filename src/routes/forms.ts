@@ -26,6 +26,16 @@ router.post(
   validateRequest,
   formController.saveForm,
 );
+router.put(
+  "/:id",
+  requireAuth,
+  imageUpload.array("images"),
+  formController.parseMultipartPayload,
+  formIdParamValidator,
+  saveFormValidator,
+  validateRequest,
+  formController.updateForm,
+);
 router.get("/", requireAuth, formController.getForms);
 router.get("/:id", requireAuth, formIdParamValidator, validateRequest, formController.getFormById);
 router.delete("/:id", requireAuth, formIdParamValidator, validateRequest, formController.deleteForm);

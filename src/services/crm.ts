@@ -151,7 +151,58 @@ async function uploadBase64ImageToCrm({
   });
 }
 
+async function deleteFileFromCrm({
+  folder,
+  filename,
+}: {
+  folder: string;
+  filename: string;
+}) {
+  const url = `${CRM_BASE_URL}/api/files/${encodeURIComponent(
+    folder,
+  )}/${encodeURIComponent(filename)}`;
+
+  const response = await fetch(url, { method: "DELETE" });
+
+  // El archivo ya no existe: el resultado deseado ya se cumplió.
+  if (response.status === 404) return;
+
+  if (!response.ok) {
+    const text = await response.text().catch(() => "");
+    throw new Error(
+      `CRM delete failed: ${response.status} ${response.statusText} ${text}`,
+    );
+  }
+}
+
+function getCrmFileLocation(fileUrl: string) {
+  try {
+    const baseUrl = new URL(CRM_BASE_URL);
+    const parsedUrl = new URL(fileUrl, baseUrl);
+
+    if (parsedUrl.origin !== baseUrl.origin) return null;
+
+    const segments = parsedUrl.pathname.split("/").filter(Boolean);
+    if (
+      segments.length !== 4 ||
+      segments[0] !== "api" ||
+      segments[1] !== "files"
+    ) {
+      return null;
+    }
+
+    return {
+      folder: decodeURIComponent(segments[2]),
+      filename: decodeURIComponent(segments[3]),
+    };
+  } catch {
+    return null;
+  }
+}
+
 export default {
   uploadImageToCrm,
   uploadBase64ImageToCrm,
+  deleteFileFromCrm,
+  getCrmFileLocation,
 };

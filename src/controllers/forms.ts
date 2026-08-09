@@ -47,6 +47,49 @@ async function saveForm(req: Request, res: Response) {
   }
 }
 
+async function updateForm(req: Request, res: Response) {
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    const result = await formService.updateForm({
+      formId: req.params.id as string,
+      payload: req.body,
+      images: (req.files as Express.Multer.File[] | undefined) ?? [],
+      client,
+    });
+
+    if (!result) {
+      await client.query("ROLLBACK");
+      return sendError({ res, statusCode: 404, message: "FormNotFound" });
+    }
+
+    await client.query("COMMIT");
+
+    const deletionResults = await formService.deleteObsoleteFormImages(
+      result.obsoleteImageUrls,
+    );
+    for (const deletion of deletionResults) {
+      if (deletion.status === "rejected") {
+        console.error("No se pudo eliminar una imagen anterior del CRM", deletion.reason);
+      }
+    }
+
+    return sendSuccess({
+      res,
+      data: { formId: result.formId },
+      message: "FormUpdated",
+    });
+  } catch (error: any) {
+    console.error(error);
+    await client.query("ROLLBACK").catch(() => null);
+    return sendError({ res });
+  } finally {
+    client.release();
+  }
+}
+
 async function getForms(req: Request, res: Response) {
   try {
     const forms = await formService.getForms();
@@ -98,6 +141,7 @@ async function deleteForm(req: Request, res: Response) {
 export default {
   parseMultipartPayload,
   saveForm,
+  updateForm,
   getForms,
   getFormById,
   deleteForm,
