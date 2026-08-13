@@ -36,7 +36,7 @@ router.put(
   validateRequest,
   formController.updateForm,
 );
-router.get("/", requireAuth, formController.getForms);
+router.get("/", formController.getForms);
 router.get("/:id", requireAuth, formIdParamValidator, validateRequest, formController.getFormById);
 router.delete("/:id", requireAuth, formIdParamValidator, validateRequest, formController.deleteForm);
 
