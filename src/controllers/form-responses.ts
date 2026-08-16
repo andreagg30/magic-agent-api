@@ -32,10 +32,9 @@ async function getById(req: Request, res: Response) {
   }
 }
 
-async function getAll(req: Request, res: Response) {
+async function getAll(_req: Request, res: Response) {
   try {
-    const formId = req.params.formId as string | undefined;
-    const responses = await formResponseService.getAll(formId);
+    const responses = await formResponseService.getAll();
     return sendSuccess({ res, data: { responses } });
   } catch (error) {
     console.error(error);
