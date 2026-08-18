@@ -23,3 +23,10 @@ export const responseIdParamValidator = [
 export const responseFormIdParamValidator = [
   param("formId").isUUID().withMessage("El id del formulario debe ser un UUID válido"),
 ];
+
+export const updateFormResponseStatusValidator = [
+  ...responseIdParamValidator,
+  body("statusId")
+    .isInt({ min: 1 })
+    .withMessage("El statusId debe ser un entero válido"),
+];

@@ -31,4 +31,16 @@ const remove = async (id: string, client: PoolClient) => {
   return result.rows[0]?.deleted === true;
 };
 
-export default { create, getById, getAll, remove };
+const updateStatus = async (
+  id: string,
+  statusId: number,
+  client: PoolClient,
+) => {
+  const result = await client.query(
+    "SELECT update_form_response_status($1::uuid, $2::integer) AS updated",
+    [id, statusId],
+  );
+  return result.rows[0]?.updated === true;
+};
+
+export default { create, getById, getAll, remove, updateStatus };

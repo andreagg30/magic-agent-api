@@ -14,6 +14,7 @@ import cors from "cors";
 import emailService from "./services/mails.js";
 import passwordRouter from "./routes/passwords.js";
 import formResponseRouter from "./routes/form-responses.js";
+import catalogRouter from "./routes/catalog.js";
 // Create the Express application
 const app = express();
 const port = 3000;
@@ -51,6 +52,7 @@ app.use("/api/sessions", sessionRouter);
 app.use("/api/passwords", passwordRouter);
 app.use("/api/forms", formRouter);
 app.use("/api/form-responses", formResponseRouter);
+app.use("/api/catalog", catalogRouter);
 
 // Global error handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

@@ -6,6 +6,7 @@ import {
   createFormResponseValidator,
   responseFormIdParamValidator,
   responseIdParamValidator,
+  updateFormResponseStatusValidator,
 } from "../validators/form-responses.js";
 
 const router = Router();
@@ -14,6 +15,7 @@ router.post("/", createFormResponseValidator, validateRequest, formResponseContr
 router.get("/all", requireAuth, formResponseController.getAll);
 router.get("/form/:formId", requireAuth, responseFormIdParamValidator, validateRequest, formResponseController.getAll);
 router.get("/:id", requireAuth, responseIdParamValidator, validateRequest, formResponseController.getById);
+router.patch("/:id/status", requireAuth, updateFormResponseStatusValidator, validateRequest, formResponseController.updateStatus);
 router.delete("/:id", requireAuth, responseIdParamValidator, validateRequest, formResponseController.remove);
 
 export default router;

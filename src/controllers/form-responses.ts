@@ -62,4 +62,31 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export default { create, getById, getAll, remove };
+async function updateStatus(req: Request, res: Response) {
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+    const updated = await formResponseService.updateStatus(
+      req.params.id as string,
+      req.body.statusId as number,
+      client,
+    );
+    if (!updated) {
+      await client.query("ROLLBACK");
+      return sendError({ res, statusCode: 404, message: "FormResponseNotFound" });
+    }
+    await client.query("COMMIT");
+    return sendSuccess({ res, message: "FormResponseStatusUpdated" });
+  } catch (error: any) {
+    await client.query("ROLLBACK").catch(() => null);
+    if (error?.code === "22023") {
+      return sendError({ res, statusCode: 400, message: "InvalidFormResponseStatus" });
+    }
+    console.error(error);
+    return sendError({ res });
+  } finally {
+    client.release();
+  }
+}
+
+export default { create, getById, getAll, remove, updateStatus };
