@@ -50,6 +50,18 @@ async function getById(req: Request, res: Response) {
   }
 }
 
+async function getByFormId(req: Request, res: Response) {
+  try {
+    const policies = await policyService.getByFormId(
+      req.params.formId as string,
+    );
+    return sendSuccess({ res, data: { policies } });
+  } catch (error) {
+    console.error(error);
+    return sendError({ res });
+  }
+}
+
 async function update(req: Request, res: Response) {
   const client = await pool.connect();
   try {
@@ -89,4 +101,4 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export default { create, getAll, getById, update, remove };
+export default { create, getAll, getById, getByFormId, update, remove };

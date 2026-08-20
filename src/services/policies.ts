@@ -40,6 +40,14 @@ const getById = async (id: string) => {
   return result.rows[0]?.policy;
 };
 
+const getByFormId = async (formId: string) => {
+  const result = await pool.query(
+    "SELECT get_policies_by_form_id($1::uuid) AS policy",
+    [formId],
+  );
+  return result.rows.map((row) => row.policy);
+};
+
 const update = async (id: string, payload: PolicyPayload, client: PoolClient) => {
   const result = await client.query(
     `SELECT update_policy(
@@ -65,4 +73,4 @@ const remove = async (id: string, client: PoolClient) => {
   return result.rows[0]?.deleted === true;
 };
 
-export default { create, getAll, getById, update, remove };
+export default { create, getAll, getById, getByFormId, update, remove };

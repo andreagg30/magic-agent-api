@@ -4,6 +4,12 @@ export const policyIdParamValidator = [
   param("id").isUUID().withMessage("El id de la política debe ser un UUID válido"),
 ];
 
+export const policyFormIdParamValidator = [
+  param("formId")
+    .isUUID()
+    .withMessage("El id del formulario debe ser un UUID válido"),
+];
+
 export const savePolicyValidator = [
   body("title")
     .trim()
