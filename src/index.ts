@@ -16,6 +16,7 @@ import passwordRouter from "./routes/passwords.js";
 import formResponseRouter from "./routes/form-responses.js";
 import catalogRouter from "./routes/catalog.js";
 import policyRouter from "./routes/policies.js";
+import productTypeRouter from "./routes/product-types.js";
 // Create the Express application
 const app = express();
 const port = 3000;
@@ -55,6 +56,7 @@ app.use("/api/forms", formRouter);
 app.use("/api/form-responses", formResponseRouter);
 app.use("/api/catalog", catalogRouter);
 app.use("/api/policies", policyRouter);
+app.use("/api/product-types", productTypeRouter);
 
 // Global error handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
