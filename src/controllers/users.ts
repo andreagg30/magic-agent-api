@@ -231,7 +231,18 @@ async function getUserById(req: AuthRequest, res: Response) {
   }
 }
 
+async function getAll(req: Request, res: Response) {
+  try {
+    const users = await userService.getAll();
+    return sendSuccess({ res, data: { users } });
+  } catch (error) {
+    console.error(error);
+    return sendError({ res });
+  }
+}
+
 export default {
+  getAll,
   login,
   getUserById,
   signUp,

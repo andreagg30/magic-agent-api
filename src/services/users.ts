@@ -77,11 +77,17 @@ const getUserById = async ({ userId }: { userId: string }) => {
   return user;
 };
 
+const getAll = async () => {
+  const result = await pool.query("SELECT * FROM get_users()");
+  return result.rows;
+};
+
 const deleteOneUser = () => {
   return;
 };
 
 export default {
+  getAll,
   getUserLogin,
   signUp,
   getUserById,

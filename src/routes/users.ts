@@ -6,6 +6,8 @@ import { requireAuth } from "../middlewares/require-auth.js";
 
 const router = Router();
 
+router.get("/", requireAuth, userController.getAll);
+
 router.post("/logout", userController.logout);
 
 router.post("/login", getUserValidator, validateRequest, userController.login);
