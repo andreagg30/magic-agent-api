@@ -98,7 +98,16 @@ async function login(req: Request, res: Response) {
 async function signUp(req: Request, res: Response) {
   const client = await pool.connect();
 
-  const { first_name, last_name, email, phone, password } = req.body;
+  const {
+    first_name,
+    last_name,
+    email,
+    phone,
+    password,
+    email_verified = false,
+  } = req.body;
+  let accessToken: string | undefined;
+  let refreshToken: string | undefined;
 
   try {
     await client.query("BEGIN");
@@ -122,42 +131,47 @@ async function signUp(req: Request, res: Response) {
       phone,
       password: passwordHash,
       user_type_id: 2, // user_type_id for regular users
+      email_verified,
       client,
     });
 
-    const payload = {
-      userId: id,
-      email: email,
-    };
+    if (!email_verified) {
+      const payload = {
+        userId: id,
+        email: email,
+      };
 
-    const accessToken = createAccessToken(payload);
-    const refreshToken = createRefreshToken(payload);
+      accessToken = createAccessToken(payload);
+      refreshToken = createRefreshToken(payload);
+      const refreshTokenHash = hashToken(refreshToken);
 
-    const refreshTokenHash = hashToken(refreshToken);
+      await sessionService.addSession({
+        id: id,
+        refreshTokenHash,
+        user_agent: req.headers["user-agent"] || null,
+        ip: req.ip || null,
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        client,
+      });
 
-    await sessionService.addSession({
-      id: id,
-      refreshTokenHash,
-      user_agent: req.headers["user-agent"] || null,
-      ip: req.ip || null,
-      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-      client,
-    });
-
-    await otpService.createAndSendOtp({
-      userId: id,
-      client,
-      email,
-    });
+      await otpService.createAndSendOtp({
+        userId: id,
+        client,
+        email,
+      });
+    }
 
     await client.query("COMMIT");
 
-    setAuthCookies(res, accessToken, refreshToken);
+    if (accessToken && refreshToken) {
+      setAuthCookies(res, accessToken, refreshToken);
+    }
 
     return sendSuccess({
       res,
       data: {
         user_id: id,
+        email_verified,
       },
     });
   } catch (error: any) {

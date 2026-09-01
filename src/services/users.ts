@@ -39,6 +39,7 @@ const signUp = async ({
   phone,
   password,
   user_type_id,
+  email_verified,
   client,
 }: {
   first_name: string;
@@ -47,6 +48,7 @@ const signUp = async ({
   phone?: string;
   password: string;
   user_type_id: number;
+  email_verified: boolean;
   client: PoolClient;
 }) => {
   const result = await client.query(
@@ -56,10 +58,19 @@ const signUp = async ({
             $3::varchar,
             $4::varchar,
             $5::text,
-            $6::integer
+            $6::integer,
+            $7::boolean
           ) AS user_id
           `,
-    [first_name, last_name, email, phone ?? null, password, user_type_id],
+    [
+      first_name,
+      last_name,
+      email,
+      phone ?? null,
+      password,
+      user_type_id,
+      email_verified,
+    ],
   );
   return result.rows[0].user_id;
 };

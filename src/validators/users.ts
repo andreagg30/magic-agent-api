@@ -70,6 +70,10 @@ export const addUserValidator = [
     .withMessage("La contraseña debe incluir al menos una minúscula")
     .matches(/[0-9]/)
     .withMessage("La contraseña debe incluir al menos un número"),
+  body("email_verified")
+    .optional()
+    .isBoolean({ strict: true })
+    .withMessage("email_verified debe ser un booleano"),
 ];
 
 export const verifyOtpValidator = [
