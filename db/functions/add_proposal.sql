@@ -30,14 +30,14 @@ BEGIN
   ) RETURNING id INTO v_proposal_id;
 
   IF jsonb_typeof(p_payload->'images') = 'array' THEN
-    INSERT INTO proposal_images (proposal_id, path, name, position)
+    INSERT INTO proposal_images (proposal_id, src, name, position)
     SELECT
       v_proposal_id,
-      COALESCE(NULLIF(image->>'src', ''), NULLIF(image->>'path', '')),
+      NULLIF(image->>'src', ''),
       NULLIF(image->>'name', ''),
       ordinality - 1
     FROM jsonb_array_elements(p_payload->'images') WITH ORDINALITY AS entries(image, ordinality)
-    WHERE COALESCE(NULLIF(image->>'src', ''), NULLIF(image->>'path', '')) IS NOT NULL;
+    WHERE NULLIF(image->>'src', '') IS NOT NULL;
   END IF;
 
   IF jsonb_typeof(p_payload->'users') = 'array' THEN

@@ -42,7 +42,7 @@ END,
     'images', COALESCE((
       SELECT jsonb_agg(jsonb_build_object(
         'id', pi.id,
-        'src', pi.path,
+        'src', pi.src,
         'name', pi.name
       ) ORDER BY pi.position)
       FROM proposal_images pi

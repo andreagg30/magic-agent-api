@@ -62,10 +62,9 @@ export const saveProposalValidator = [
   body("images.*")
     .isObject()
     .withMessage("Cada imagen debe ser un objeto")
-    .custom((image: { src?: unknown; path?: unknown }) => {
+    .custom((image: { src?: unknown }) => {
       const src = typeof image.src === "string" ? image.src.trim() : "";
-      const path = typeof image.path === "string" ? image.path.trim() : "";
-      if (!src && !path) throw new Error("Cada imagen debe incluir src o path");
+      if (!src) throw new Error("Cada imagen debe incluir src");
       return true;
     }),
   body("images.*.name")
@@ -75,11 +74,9 @@ export const saveProposalValidator = [
   body("images.*.src")
     .optional(optional)
     .isString()
-    .withMessage("src de la imagen debe ser texto"),
-  body("images.*.path")
-    .optional(optional)
-    .isString()
-    .withMessage("path de la imagen debe ser texto"),
+    .withMessage("src de la imagen debe ser texto")
+    .isURL({ require_protocol: true })
+    .withMessage("src debe ser una URL completa válida"),
   body("showParty")
     .optional({ nullable: true })
     .isBoolean({ strict: true })

@@ -4,7 +4,6 @@ import { pool } from "../database/db-connection.js";
 type ProposalImage = {
   name?: string | null;
   src?: string | null;
-  path?: string | null;
 };
 
 export type ProposalPayload = {
