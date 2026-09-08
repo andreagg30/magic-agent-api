@@ -1,0 +1,8 @@
+ALTER TABLE proposals
+ADD COLUMN IF NOT EXISTS parent_id UUID REFERENCES proposals(id) ON DELETE SET NULL,
+ADD COLUMN IF NOT EXISTS show_main_page BOOLEAN,
+ADD COLUMN IF NOT EXISTS name VARCHAR(100),
+ADD COLUMN IF NOT EXISTS description VARCHAR(1500);
+
+CREATE INDEX IF NOT EXISTS idx_proposals_parent_id
+ON proposals(parent_id);

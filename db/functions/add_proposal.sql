@@ -10,18 +10,35 @@ DECLARE
   v_position INTEGER;
 BEGIN
   INSERT INTO proposals (
-    response_id, total, total_type_id, status_id, show_party, notes,
-    gral_party_number, gral_party_children
+    parent_id, response_id, name, description, total, total_type_id, status_id,
+    is_package, show_main_page, show_party, notes, gral_party_number,
+    gral_party_children
   ) VALUES (
+    NULLIF(p_payload->>'parentId', '')::UUID,
     NULLIF(p_payload->>'responseId', '')::UUID,
+    NULLIF(p_payload->>'name', ''),
+    NULLIF(p_payload->>'description', ''),
     NULLIF(p_payload->>'total', '')::NUMERIC(14, 2),
     NULLIF(p_payload->>'totalType', '')::INTEGER,
     NULLIF(p_payload->>'statusId', '')::INTEGER,
+    NULLIF(p_payload->>'isPackage', '')::BOOLEAN,
+    NULLIF(p_payload->>'showMainPage', '')::BOOLEAN,
     NULLIF(p_payload->>'showParty', '')::BOOLEAN,
     NULLIF(p_payload->>'notes', ''),
     NULLIF(p_payload->>'gralPartyNumber', '')::INTEGER,
     NULLIF(p_payload->>'gralPartyChildren', '')::INTEGER
   ) RETURNING id INTO v_proposal_id;
+
+  IF jsonb_typeof(p_payload->'images') = 'array' THEN
+    INSERT INTO proposal_images (proposal_id, path, name, position)
+    SELECT
+      v_proposal_id,
+      COALESCE(NULLIF(image->>'src', ''), NULLIF(image->>'path', '')),
+      NULLIF(image->>'name', ''),
+      ordinality - 1
+    FROM jsonb_array_elements(p_payload->'images') WITH ORDINALITY AS entries(image, ordinality)
+    WHERE COALESCE(NULLIF(image->>'src', ''), NULLIF(image->>'path', '')) IS NOT NULL;
+  END IF;
 
   IF jsonb_typeof(p_payload->'users') = 'array' THEN
     INSERT INTO proposal_users (proposal_id, user_id, position)

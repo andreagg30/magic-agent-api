@@ -13,10 +13,26 @@ export const proposalResponseIdParamValidator = [
 ];
 
 export const saveProposalValidator = [
+  body("parentId")
+    .optional(optional)
+    .isUUID()
+    .withMessage("parentId debe ser un UUID válido"),
   body("responseId")
     .optional(optional)
     .isUUID()
     .withMessage("responseId debe ser un UUID válido"),
+  body("name")
+    .optional({ nullable: true })
+    .isString()
+    .withMessage("name debe ser texto")
+    .isLength({ max: 100 })
+    .withMessage("name no puede exceder 100 caracteres"),
+  body("description")
+    .optional({ nullable: true })
+    .isString()
+    .withMessage("description debe ser texto")
+    .isLength({ max: 1500 })
+    .withMessage("description no puede exceder 1500 caracteres"),
   body("total")
     .optional(optional)
     .isDecimal({ decimal_digits: "0,2" })
@@ -31,6 +47,39 @@ export const saveProposalValidator = [
     .optional(optional)
     .isInt()
     .withMessage("statusId debe ser un entero"),
+  body("isPackage")
+    .optional({ nullable: true })
+    .isBoolean({ strict: true })
+    .withMessage("isPackage debe ser booleano"),
+  body("showMainPage")
+    .optional({ nullable: true })
+    .isBoolean({ strict: true })
+    .withMessage("showMainPage debe ser booleano"),
+  body("images")
+    .optional({ nullable: true })
+    .isArray()
+    .withMessage("images debe ser un arreglo"),
+  body("images.*")
+    .isObject()
+    .withMessage("Cada imagen debe ser un objeto")
+    .custom((image: { src?: unknown; path?: unknown }) => {
+      const src = typeof image.src === "string" ? image.src.trim() : "";
+      const path = typeof image.path === "string" ? image.path.trim() : "";
+      if (!src && !path) throw new Error("Cada imagen debe incluir src o path");
+      return true;
+    }),
+  body("images.*.name")
+    .optional(optional)
+    .isString()
+    .withMessage("El nombre de la imagen debe ser texto"),
+  body("images.*.src")
+    .optional(optional)
+    .isString()
+    .withMessage("src de la imagen debe ser texto"),
+  body("images.*.path")
+    .optional(optional)
+    .isString()
+    .withMessage("path de la imagen debe ser texto"),
   body("showParty")
     .optional({ nullable: true })
     .isBoolean({ strict: true })

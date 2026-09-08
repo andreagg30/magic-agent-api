@@ -1,15 +1,28 @@
 CREATE TABLE proposals (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  parent_id UUID REFERENCES proposals(id) ON DELETE SET NULL,
   response_id UUID REFERENCES form_responses(id) ON DELETE SET NULL,
+  name VARCHAR(100),
+  description VARCHAR(1500),
   total NUMERIC(14, 2),
   total_type_id INTEGER REFERENCES catalog(id) ON DELETE SET NULL,
   status_id INTEGER REFERENCES catalog(id) ON DELETE SET NULL,
+  is_package BOOLEAN,
+  show_main_page BOOLEAN,
   show_party BOOLEAN,
   notes VARCHAR(500),
   gral_party_number INTEGER,
   gral_party_children INTEGER,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE proposal_images (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  proposal_id UUID NOT NULL REFERENCES proposals(id) ON DELETE CASCADE,
+  path TEXT NOT NULL,
+  name TEXT,
+  position INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE proposal_users (
@@ -45,8 +58,10 @@ CREATE TABLE proposal_party_members (
 );
 
 CREATE INDEX idx_proposals_response_id ON proposals(response_id);
+CREATE INDEX idx_proposals_parent_id ON proposals(parent_id);
 CREATE INDEX idx_proposals_total_type_id ON proposals(total_type_id);
 CREATE INDEX idx_proposals_status_id ON proposals(status_id);
+CREATE INDEX idx_proposal_images_proposal_id ON proposal_images(proposal_id);
 CREATE INDEX idx_proposal_users_user_id ON proposal_users(user_id);
 CREATE INDEX idx_proposal_products_proposal_id ON proposal_products(proposal_id);
 CREATE INDEX idx_proposal_products_product_id ON proposal_products(product_id);

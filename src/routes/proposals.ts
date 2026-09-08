@@ -7,7 +7,6 @@ import {
   proposalResponseIdParamValidator,
   saveProposalValidator,
 } from "../validators/proposals.js";
-
 const router = Router();
 
 router.use(requireAuth);

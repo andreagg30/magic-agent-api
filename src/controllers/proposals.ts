@@ -36,7 +36,8 @@ async function create(req: Request, res: Response) {
 
 async function getAll(_req: Request, res: Response) {
   try {
-    return sendSuccess({ res, data: { proposals: await proposalService.getAll() } });
+    const proposals = await proposalService.getAll();
+    return sendSuccess({ res, data: { proposals } });
   } catch (error) {
     console.error(error);
     return sendError({ res });
@@ -46,7 +47,9 @@ async function getAll(_req: Request, res: Response) {
 async function getById(req: Request, res: Response) {
   try {
     const proposal = await proposalService.getById(req.params.id as string);
-    if (!proposal) return sendError({ res, statusCode: 404, message: "ProposalNotFound" });
+    if (!proposal) {
+      return sendError({ res, statusCode: 404, message: "ProposalNotFound" });
+    }
     return sendSuccess({ res, data: { proposal } });
   } catch (error) {
     console.error(error);

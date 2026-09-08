@@ -8,10 +8,15 @@ DECLARE
   v_position INTEGER;
 BEGIN
   UPDATE proposals SET
+    parent_id = NULLIF(p_payload->>'parentId', '')::UUID,
     response_id = NULLIF(p_payload->>'responseId', '')::UUID,
+    name = NULLIF(p_payload->>'name', ''),
+    description = NULLIF(p_payload->>'description', ''),
     total = NULLIF(p_payload->>'total', '')::NUMERIC(14, 2),
     total_type_id = NULLIF(p_payload->>'totalType', '')::INTEGER,
     status_id = NULLIF(p_payload->>'statusId', '')::INTEGER,
+    is_package = NULLIF(p_payload->>'isPackage', '')::BOOLEAN,
+    show_main_page = NULLIF(p_payload->>'showMainPage', '')::BOOLEAN,
     show_party = NULLIF(p_payload->>'showParty', '')::BOOLEAN,
     notes = NULLIF(p_payload->>'notes', ''),
     gral_party_number = NULLIF(p_payload->>'gralPartyNumber', '')::INTEGER,
@@ -20,9 +25,21 @@ BEGIN
 
   IF NOT FOUND THEN RETURN FALSE; END IF;
 
+  DELETE FROM proposal_images WHERE proposal_id = p_proposal_id;
   DELETE FROM proposal_party_members WHERE proposal_id = p_proposal_id;
   DELETE FROM proposal_products WHERE proposal_id = p_proposal_id;
   DELETE FROM proposal_users WHERE proposal_id = p_proposal_id;
+
+  IF jsonb_typeof(p_payload->'images') = 'array' THEN
+    INSERT INTO proposal_images (proposal_id, path, name, position)
+    SELECT
+      p_proposal_id,
+      COALESCE(NULLIF(image->>'src', ''), NULLIF(image->>'path', '')),
+      NULLIF(image->>'name', ''),
+      ordinality - 1
+    FROM jsonb_array_elements(p_payload->'images') WITH ORDINALITY AS entries(image, ordinality)
+    WHERE COALESCE(NULLIF(image->>'src', ''), NULLIF(image->>'path', '')) IS NOT NULL;
+  END IF;
 
   IF jsonb_typeof(p_payload->'users') = 'array' THEN
     INSERT INTO proposal_users (proposal_id, user_id, position)

@@ -5,7 +5,10 @@ STABLE
 AS $$
   SELECT jsonb_build_object(
     'id', p.id,
+    'parentId', p.parent_id,
     'responseId', p.response_id,
+    'name', p.name,
+    'description', p.description,
     'users', COALESCE((
       SELECT jsonb_agg(jsonb_build_object(
         'id', u.id,
@@ -34,6 +37,17 @@ END,
       WHEN c.id IS NULL THEN NULL
       ELSE jsonb_build_object('id', c.id, 'label', c.label)
     END,
+    'isPackage', p.is_package,
+    'showMainPage', p.show_main_page,
+    'images', COALESCE((
+      SELECT jsonb_agg(jsonb_build_object(
+        'id', pi.id,
+        'src', pi.path,
+        'name', pi.name
+      ) ORDER BY pi.position)
+      FROM proposal_images pi
+      WHERE pi.proposal_id = p.id
+    ), '[]'::JSONB),
     'showParty', p.show_party,
     'notes', p.notes,
     'gralPartyNumber', p.gral_party_number,

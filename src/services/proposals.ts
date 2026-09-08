@@ -1,12 +1,24 @@
 import type { PoolClient } from "pg";
 import { pool } from "../database/db-connection.js";
 
+type ProposalImage = {
+  name?: string | null;
+  src?: string | null;
+  path?: string | null;
+};
+
 export type ProposalPayload = {
+  parentId?: string | null;
   responseId?: string | null;
+  name?: string | null;
+  description?: string | null;
   users?: string[] | null;
   total?: string | number | null;
   totalType?: number | null;
   statusId?: number | null;
+  isPackage?: boolean | null;
+  showMainPage?: boolean | null;
+  images?: ProposalImage[] | null;
   showParty?: boolean | null;
   notes?: string | null;
   gralPartyNumber?: string | number | null;
