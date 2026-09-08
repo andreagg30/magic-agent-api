@@ -46,8 +46,11 @@ const update = async (
   return result.rows[0]?.updated === true;
 };
 
-const getAll = async () => {
-  const result = await pool.query("SELECT get_proposals() AS proposal");
+const getAll = async (isPackage?: boolean) => {
+  const result = await pool.query(
+    "SELECT get_proposals($1::boolean) AS proposal",
+    [isPackage ?? null],
+  );
   return result.rows.map((row) => row.proposal);
 };
 

@@ -1,6 +1,13 @@
-import { body, param } from "express-validator";
+import { body, param, query } from "express-validator";
 
 const optional = { nullable: true, checkFalsy: true } as const;
+
+export const getProposalsValidator = [
+  query("isPackage")
+    .optional()
+    .isIn(["true", "false"])
+    .withMessage("isPackage debe ser true o false"),
+];
 
 export const proposalIdParamValidator = [
   param("id").isUUID().withMessage("El id de la propuesta debe ser un UUID válido"),

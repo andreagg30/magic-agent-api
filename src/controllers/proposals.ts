@@ -34,9 +34,13 @@ async function create(req: Request, res: Response) {
   }
 }
 
-async function getAll(_req: Request, res: Response) {
+async function getAll(req: Request, res: Response) {
   try {
-    const proposals = await proposalService.getAll();
+    const isPackage =
+      req.query.isPackage === undefined
+        ? undefined
+        : req.query.isPackage === "true";
+    const proposals = await proposalService.getAll(isPackage);
     return sendSuccess({ res, data: { proposals } });
   } catch (error) {
     console.error(error);

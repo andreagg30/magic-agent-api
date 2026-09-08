@@ -3,6 +3,7 @@ import proposalController from "../controllers/proposals.js";
 import { requireAuth } from "../middlewares/require-auth.js";
 import { validateRequest } from "../validators/validateRequest.js";
 import {
+  getProposalsValidator,
   proposalIdParamValidator,
   proposalResponseIdParamValidator,
   saveProposalValidator,
@@ -10,7 +11,12 @@ import {
 const router = Router();
 
 router.use(requireAuth);
-router.get("/", proposalController.getAll);
+router.get(
+  "/",
+  getProposalsValidator,
+  validateRequest,
+  proposalController.getAll,
+);
 router.get(
   "/response/:responseId",
   proposalResponseIdParamValidator,
