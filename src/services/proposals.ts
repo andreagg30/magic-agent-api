@@ -46,17 +46,17 @@ const update = async (
   return result.rows[0]?.updated === true;
 };
 
-const getAll = async (isPackage?: boolean) => {
+const getAll = async (isPackage?: boolean, parentId?: string) => {
   const result = await pool.query(
-    "SELECT get_proposals($1::boolean) AS proposal",
-    [isPackage ?? null],
+    "SELECT get_proposals($1::boolean, $2::uuid) AS proposal",
+    [isPackage ?? null, parentId ?? null],
   );
   return result.rows.map((row) => row.proposal);
 };
 
 const getById = async (id: string) => {
   const result = await pool.query(
-    "SELECT get_proposal_by_id($1::uuid) AS proposal",
+    "SELECT get_proposal_by_id($1::uuid, TRUE) AS proposal",
     [id],
   );
   return result.rows[0]?.proposal;

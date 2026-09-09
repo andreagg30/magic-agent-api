@@ -1,4 +1,7 @@
-CREATE OR REPLACE FUNCTION get_proposal_by_id(p_proposal_id UUID)
+CREATE OR REPLACE FUNCTION get_proposal_by_id(
+  p_proposal_id UUID,
+  p_include_parent BOOLEAN DEFAULT TRUE
+)
 RETURNS JSONB
 LANGUAGE sql
 STABLE
@@ -6,6 +9,11 @@ AS $$
   SELECT jsonb_build_object(
     'id', p.id,
     'parentId', p.parent_id,
+    'parent', CASE
+      WHEN p_include_parent AND p.parent_id IS NOT NULL
+        THEN get_proposal_by_id(p.parent_id, FALSE)
+      ELSE NULL
+    END,
     'responseId', p.response_id,
     'name', p.name,
     'description', p.description,

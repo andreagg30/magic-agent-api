@@ -7,6 +7,10 @@ export const getProposalsValidator = [
     .optional()
     .isIn(["true", "false"])
     .withMessage("isPackage debe ser true o false"),
+  query("parentId")
+    .optional()
+    .isUUID()
+    .withMessage("parentId debe ser un UUID válido"),
 ];
 
 export const proposalIdParamValidator = [
