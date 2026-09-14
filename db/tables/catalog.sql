@@ -15,3 +15,8 @@ CREATE TABLE catalog (
 
 INSERT INTO catalog (category_code, label) VALUES ('currency_type', 'Dólares estadounidenses - USD');
 INSERT INTO catalog (category_code, label) VALUES ('currency_type', 'Pesos mexicanos - MXN');
+
+INSERT INTO catalog (category_code, label) VALUES ('urgency_type', 'Crítica');
+INSERT INTO catalog (category_code, label) VALUES ('urgency_type', 'Alta');
+INSERT INTO catalog (category_code, label) VALUES ('urgency_type', 'Media');
+INSERT INTO catalog (category_code, label) VALUES ('urgency_type', 'Baja');

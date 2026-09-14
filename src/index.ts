@@ -19,6 +19,7 @@ import policyRouter from "./routes/policies.js";
 import productTypeRouter from "./routes/product-types.js";
 import productRouter from "./routes/products.js";
 import proposalRouter from "./routes/proposals.js";
+import reminderRouter from "./routes/reminders.js";
 // Create the Express application
 const app = express();
 const port = 3000;
@@ -61,6 +62,7 @@ app.use("/api/policies", policyRouter);
 app.use("/api/product-types", productTypeRouter);
 app.use("/api/products", productRouter);
 app.use("/api/proposals", proposalRouter);
+app.use("/api/reminders", reminderRouter);
 
 // Global error handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
