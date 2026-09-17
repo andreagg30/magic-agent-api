@@ -15,6 +15,7 @@ BEGIN
     total = NULLIF(p_payload->>'total', '')::NUMERIC(14, 2),
     total_type_id = NULLIF(p_payload->>'totalType', '')::INTEGER,
     status_id = NULLIF(p_payload->>'statusId', '')::INTEGER,
+    is_active = (p_payload->>'isActive')::BOOLEAN,
     is_package = NULLIF(p_payload->>'isPackage', '')::BOOLEAN,
     show_main_page = NULLIF(p_payload->>'showMainPage', '')::BOOLEAN,
     show_party = NULLIF(p_payload->>'showParty', '')::BOOLEAN,
@@ -90,6 +91,9 @@ BEGIN
       NULLIF(member->>'dob', '')::DATE, ordinality - 1
     FROM jsonb_array_elements(p_payload->'party') WITH ORDINALITY AS entries(member, ordinality);
   END IF;
+
+  PERFORM sync_proposal_reminders(p_proposal_id, p_payload->'reminders');
+  PERFORM sync_proposal_payments(p_proposal_id, p_payload->'payments');
 
   RETURN TRUE;
 END;

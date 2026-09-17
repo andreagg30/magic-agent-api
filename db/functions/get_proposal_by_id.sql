@@ -14,6 +14,17 @@ AS $$
         THEN get_proposal_by_id(p.parent_id, FALSE)
       ELSE NULL
     END,
+    'children', CASE
+      WHEN p_include_parent THEN COALESCE((
+        SELECT jsonb_agg(
+          get_proposal_by_id(child.id, FALSE)
+          ORDER BY child.created_at DESC
+        )
+        FROM proposals child
+        WHERE child.parent_id = p.id
+      ), '[]'::JSONB)
+      ELSE '[]'::JSONB
+    END,
     'responseId', p.response_id,
     'name', p.name,
     'description', p.description,
@@ -45,6 +56,7 @@ END,
       WHEN c.id IS NULL THEN NULL
       ELSE jsonb_build_object('id', c.id, 'label', c.label)
     END,
+    'isActive', p.is_active,
     'isPackage', p.is_package,
     'showMainPage', p.show_main_page,
     'images', COALESCE((
@@ -115,6 +127,47 @@ END,
       FROM proposal_party_members ppm
       WHERE ppm.proposal_id = p.id AND ppm.proposal_product_id IS NULL
     ), '[]'::JSONB),
+    'reminders', CASE
+      WHEN p_include_parent THEN COALESCE((
+        SELECT jsonb_agg(jsonb_build_object(
+          'id', r.id,
+          'name', r.name,
+          'description', r.description,
+          'isActive', r.is_active,
+          'date', r.date,
+          'urgencyId', r.urgency_id,
+          'urgency', CASE
+            WHEN urgency.id IS NULL THEN NULL
+            ELSE jsonb_build_object(
+              'label', urgency.label,
+              'value', urgency.id
+            )
+          END,
+          'createdAt', r.created_at,
+          'updatedAt', r.updated_at
+        ) ORDER BY r.date ASC, rp.position)
+        FROM reminder_proposals rp
+        JOIN reminders r ON r.id = rp.reminder_id
+        LEFT JOIN catalog urgency ON urgency.id = r.urgency_id
+        WHERE rp.proposal_id = p.id
+      ), '[]'::JSONB)
+      ELSE '[]'::JSONB
+    END,
+    'payments', CASE
+      WHEN p_include_parent THEN COALESCE((
+        SELECT jsonb_agg(jsonb_build_object(
+          'id', pay.id,
+          'notes', pay.notes,
+          'payment', pay.payment,
+          'date', pay.date,
+          'createdAt', pay.created_at,
+          'updatedAt', pay.updated_at
+        ) ORDER BY pay.position)
+        FROM payments pay
+        WHERE pay.proposal_id = p.id
+      ), '[]'::JSONB)
+      ELSE '[]'::JSONB
+    END,
     'createdAt', p.created_at,
     'updatedAt', p.updated_at
   )

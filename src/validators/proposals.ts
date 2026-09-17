@@ -58,6 +58,9 @@ export const saveProposalValidator = [
     .optional(optional)
     .isInt()
     .withMessage("statusId debe ser un entero"),
+  body("isActive")
+    .isBoolean({ strict: true })
+    .withMessage("isActive debe ser booleano"),
   body("isPackage")
     .optional({ nullable: true })
     .isBoolean({ strict: true })
@@ -165,9 +168,92 @@ export const saveProposalValidator = [
     .isArray()
     .withMessage("party debe ser un arreglo"),
 
+  body("reminders")
+    .optional({ nullable: true })
+    .isArray()
+    .withMessage("reminders debe ser un arreglo"),
+  body("reminders")
+    .optional({ nullable: true })
+    .custom(uniqueOptionalIds)
+    .withMessage("reminders no puede contener ids repetidos"),
+
+  body("payments")
+    .optional({ nullable: true })
+    .isArray()
+    .withMessage("payments debe ser un arreglo"),
+  body("payments")
+    .optional({ nullable: true })
+    .custom(uniqueOptionalIds)
+    .withMessage("payments no puede contener ids repetidos"),
+
   ...partyMemberValidators("party.*"),
   ...partyMemberValidators("products.*.party.*"),
+  ...nestedReminderValidators(),
+  ...nestedPaymentValidators(),
 ];
+
+function uniqueOptionalIds(items: Array<{ id?: string }>) {
+  if (!Array.isArray(items)) return true;
+  const ids = items.map((item) => item?.id).filter(Boolean);
+  return new Set(ids).size === ids.length;
+}
+
+function nestedReminderValidators() {
+  return [
+    body("reminders.*.id")
+      .optional(optional)
+      .isUUID()
+      .withMessage("El id del reminder debe ser un UUID válido"),
+    body("reminders.*.name")
+      .trim()
+      .notEmpty()
+      .withMessage("El nombre del reminder es obligatorio")
+      .isLength({ max: 50 })
+      .withMessage("El nombre del reminder no puede exceder 50 caracteres"),
+    body("reminders.*.description")
+      .optional({ nullable: true })
+      .isString()
+      .withMessage("La descripción del reminder debe ser texto")
+      .isLength({ max: 400 })
+      .withMessage("La descripción del reminder no puede exceder 400 caracteres"),
+    body("reminders.*.isActive")
+      .isBoolean({ strict: true })
+      .withMessage("isActive del reminder debe ser booleano"),
+    body("reminders.*.date")
+      .isString()
+      .withMessage("La fecha del reminder debe ser texto")
+      .isISO8601({ strict: true })
+      .withMessage("La fecha del reminder debe ser ISO 8601 válida"),
+    body("reminders.*.urgency")
+      .isInt()
+      .withMessage("urgency del reminder debe ser un entero"),
+  ];
+}
+
+function nestedPaymentValidators() {
+  return [
+    body("payments.*.id")
+      .optional(optional)
+      .isUUID()
+      .withMessage("El id del payment debe ser un UUID válido"),
+    body("payments.*.notes")
+      .optional({ nullable: true })
+      .isString()
+      .withMessage("notes del payment debe ser texto")
+      .isLength({ max: 50 })
+      .withMessage("notes del payment no puede exceder 50 caracteres"),
+    body("payments.*.payment")
+      .isString()
+      .withMessage("payment debe ser texto")
+      .notEmpty()
+      .withMessage("payment es obligatorio"),
+    body("payments.*.date")
+      .isString()
+      .withMessage("La fecha del payment debe ser texto")
+      .isISO8601({ strict: true })
+      .withMessage("La fecha del payment debe ser ISO 8601 válida"),
+  ];
+}
 
 function partyMemberValidators(path: string) {
   return [

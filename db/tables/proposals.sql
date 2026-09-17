@@ -7,6 +7,7 @@ CREATE TABLE proposals (
   total NUMERIC(14, 2),
   total_type_id INTEGER REFERENCES catalog(id) ON DELETE SET NULL,
   status_id INTEGER REFERENCES catalog(id) ON DELETE SET NULL,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
   is_package BOOLEAN,
   show_main_page BOOLEAN,
   show_party BOOLEAN,

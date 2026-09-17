@@ -6,6 +6,22 @@ type ProposalImage = {
   src?: string | null;
 };
 
+export type ProposalReminderPayload = {
+  id?: string | null;
+  name: string;
+  description?: string | null;
+  isActive: boolean;
+  date: string;
+  urgency: number;
+};
+
+export type ProposalPaymentPayload = {
+  id?: string | null;
+  notes?: string | null;
+  payment: string;
+  date: string;
+};
+
 export type ProposalPayload = {
   parentId?: string | null;
   responseId?: string | null;
@@ -15,6 +31,7 @@ export type ProposalPayload = {
   total?: string | number | null;
   totalType?: number | null;
   statusId?: number | null;
+  isActive: boolean;
   isPackage?: boolean | null;
   showMainPage?: boolean | null;
   images?: ProposalImage[] | null;
@@ -24,6 +41,8 @@ export type ProposalPayload = {
   gralPartyChildren?: string | number | null;
   products?: unknown[] | null;
   party?: unknown[] | null;
+  reminders?: ProposalReminderPayload[] | null;
+  payments?: ProposalPaymentPayload[] | null;
 };
 
 const create = async (payload: ProposalPayload, client: PoolClient) => {
