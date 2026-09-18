@@ -75,7 +75,7 @@ const getAll = async (isPackage?: boolean, parentId?: string) => {
 
 const getById = async (id: string) => {
   const result = await pool.query(
-    "SELECT get_proposal_by_id($1::uuid, TRUE) AS proposal",
+    "SELECT get_proposal_by_id($1::uuid, TRUE, TRUE) AS proposal",
     [id],
   );
   return result.rows[0]?.proposal;

@@ -1,6 +1,7 @@
 CREATE OR REPLACE FUNCTION get_proposal_by_id(
   p_proposal_id UUID,
-  p_include_parent BOOLEAN DEFAULT TRUE
+  p_include_parent BOOLEAN DEFAULT TRUE,
+  p_include_details BOOLEAN DEFAULT TRUE
 )
 RETURNS JSONB
 LANGUAGE sql
@@ -11,13 +12,13 @@ AS $$
     'parentId', p.parent_id,
     'parent', CASE
       WHEN p_include_parent AND p.parent_id IS NOT NULL
-        THEN get_proposal_by_id(p.parent_id, FALSE)
+        THEN get_proposal_by_id(p.parent_id, FALSE, FALSE)
       ELSE NULL
     END,
     'children', CASE
       WHEN p_include_parent THEN COALESCE((
         SELECT jsonb_agg(
-          get_proposal_by_id(child.id, FALSE)
+          get_proposal_by_id(child.id, FALSE, TRUE)
           ORDER BY child.created_at DESC
         )
         FROM proposals child
@@ -128,7 +129,7 @@ END,
       WHERE ppm.proposal_id = p.id AND ppm.proposal_product_id IS NULL
     ), '[]'::JSONB),
     'reminders', CASE
-      WHEN p_include_parent THEN COALESCE((
+      WHEN p_include_details THEN COALESCE((
         SELECT jsonb_agg(jsonb_build_object(
           'id', r.id,
           'name', r.name,
@@ -154,7 +155,7 @@ END,
       ELSE '[]'::JSONB
     END,
     'payments', CASE
-      WHEN p_include_parent THEN COALESCE((
+      WHEN p_include_details THEN COALESCE((
         SELECT jsonb_agg(jsonb_build_object(
           'id', pay.id,
           'notes', pay.notes,

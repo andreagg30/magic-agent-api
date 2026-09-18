@@ -13,7 +13,7 @@ AS $$
     'urgency', jsonb_build_object('label', c.label, 'value', c.id),
     'reservations', COALESCE((
       SELECT jsonb_agg(
-        get_proposal_by_id(rp.proposal_id, FALSE)
+        get_proposal_by_id(rp.proposal_id, FALSE, FALSE)
         ORDER BY rp.position
       )
       FROM reminder_proposals rp
