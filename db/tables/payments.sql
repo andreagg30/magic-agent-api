@@ -2,7 +2,7 @@ CREATE TABLE payments (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   proposal_id UUID NOT NULL REFERENCES proposals(id) ON DELETE CASCADE,
   notes VARCHAR(50),
-  payment TEXT NOT NULL,
+  payment NUMERIC(14, 2) NOT NULL,
   date TIMESTAMPTZ NOT NULL,
   position INTEGER NOT NULL DEFAULT 0,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),

@@ -13,6 +13,8 @@ CREATE TABLE catalog (
 -- Ejemplo de inserción:
 -- INSERT INTO catalog (category_code, label,) VALUES ('user_type', 'User');
 
+INSERT INTO catalog (category_code, label) VALUES ('form_response_status', 'Reservado');
+
 INSERT INTO catalog (category_code, label) VALUES ('currency_type', 'Dólares estadounidenses - USD');
 INSERT INTO catalog (category_code, label) VALUES ('currency_type', 'Pesos mexicanos - MXN');
 

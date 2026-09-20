@@ -20,14 +20,14 @@ BEGIN
         VALUES (
           p_proposal_id,
           NULLIF(v_item->>'notes', ''),
-          v_item->>'payment',
+          (v_item->>'payment')::NUMERIC(14, 2),
           (v_item->>'date')::TIMESTAMPTZ,
           v_position
         ) RETURNING id INTO v_payment_id;
       ELSE
         UPDATE payments SET
           notes = NULLIF(v_item->>'notes', ''),
-          payment = v_item->>'payment',
+          payment = (v_item->>'payment')::NUMERIC(14, 2),
           date = (v_item->>'date')::TIMESTAMPTZ,
           position = v_position
         WHERE id = v_payment_id

@@ -18,7 +18,7 @@ export type ProposalReminderPayload = {
 export type ProposalPaymentPayload = {
   id?: string | null;
   notes?: string | null;
-  payment: string;
+  payment: number;
   date: string;
 };
 
@@ -65,10 +65,14 @@ const update = async (
   return result.rows[0]?.updated === true;
 };
 
-const getAll = async (isPackage?: boolean, parentId?: string) => {
+const getAll = async (
+  isPackage?: boolean,
+  parentId?: string,
+  isReservation?: boolean,
+) => {
   const result = await pool.query(
-    "SELECT get_proposals($1::boolean, $2::uuid) AS proposal",
-    [isPackage ?? null, parentId ?? null],
+    "SELECT get_proposals($1::boolean, $2::uuid, $3::boolean) AS proposal",
+    [isPackage ?? null, parentId ?? null, isReservation ?? null],
   );
   return result.rows.map((row) => row.proposal);
 };

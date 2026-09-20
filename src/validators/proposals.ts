@@ -11,6 +11,10 @@ export const getProposalsValidator = [
     .optional()
     .isUUID()
     .withMessage("parentId debe ser un UUID válido"),
+  query("isReservation")
+    .optional()
+    .isIn(["true", "false"])
+    .withMessage("isReservation debe ser true o false"),
 ];
 
 export const proposalIdParamValidator = [
@@ -243,10 +247,12 @@ function nestedPaymentValidators() {
       .isLength({ max: 50 })
       .withMessage("notes del payment no puede exceder 50 caracteres"),
     body("payments.*.payment")
-      .isString()
-      .withMessage("payment debe ser texto")
-      .notEmpty()
-      .withMessage("payment es obligatorio"),
+      .custom((value) => {
+        if (typeof value !== "number" || !Number.isFinite(value)) return false;
+        if (Math.abs(value) >= 1_000_000_000_000) return false;
+        return Math.abs(value * 100 - Math.round(value * 100)) < 1e-8;
+      })
+      .withMessage("payment debe ser un número con máximo 2 decimales"),
     body("payments.*.date")
       .isString()
       .withMessage("La fecha del payment debe ser texto")

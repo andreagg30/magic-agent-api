@@ -41,7 +41,15 @@ async function getAll(req: Request, res: Response) {
         ? undefined
         : req.query.isPackage === "true";
     const parentId = req.query.parentId as string | undefined;
-    const proposals = await proposalService.getAll(isPackage, parentId);
+    const isReservation =
+      req.query.isReservation === undefined
+        ? undefined
+        : req.query.isReservation === "true";
+    const proposals = await proposalService.getAll(
+      isPackage,
+      parentId,
+      isReservation,
+    );
     return sendSuccess({ res, data: { proposals } });
   } catch (error) {
     console.error(error);
