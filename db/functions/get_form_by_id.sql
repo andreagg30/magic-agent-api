@@ -1,9 +1,16 @@
-CREATE OR REPLACE FUNCTION get_form_by_id(
+DROP FUNCTION IF EXISTS get_form_by_id(UUID);
+
+CREATE FUNCTION get_form_by_id(
     p_form_id UUID
 )
 RETURNS TABLE (
     id UUID,
-    name TEXT,
+    name VARCHAR(50),
+    "lastName" VARCHAR(50),
+    location VARCHAR(70),
+    phone VARCHAR(20),
+    email VARCHAR(255),
+    "secondEmail" VARCHAR(255),
     description TEXT,
     is_active BOOLEAN,
     show_appbar BOOLEAN,
@@ -16,6 +23,11 @@ AS $$
     SELECT
         f.id,
         f.name,
+        f.last_name AS "lastName",
+        f.location,
+        f.phone,
+        f.email,
+        f.second_email AS "secondEmail",
         f.description,
         f.is_active,
         f.show_appbar,

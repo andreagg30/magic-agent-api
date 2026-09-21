@@ -1,6 +1,11 @@
 CREATE TABLE forms (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name TEXT NOT NULL,
+  name VARCHAR(50) NOT NULL,
+  last_name VARCHAR(50),
+  location VARCHAR(70),
+  phone VARCHAR(20),
+  email VARCHAR(255),
+  second_email VARCHAR(255),
   description TEXT,
   is_active BOOLEAN NOT NULL DEFAULT TRUE,
   show_appbar BOOLEAN NOT NULL DEFAULT FALSE,

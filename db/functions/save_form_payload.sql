@@ -21,6 +21,11 @@ BEGIN
         UPDATE forms
         SET
             name = TRIM(p_payload->>'name'),
+            last_name = NULLIF(TRIM(p_payload->>'lastName'), ''),
+            location = NULLIF(TRIM(p_payload->>'location'), ''),
+            phone = NULLIF(TRIM(p_payload->>'phone'), ''),
+            email = NULLIF(LOWER(TRIM(p_payload->>'email')), ''),
+            second_email = NULLIF(LOWER(TRIM(p_payload->>'secondEmail')), ''),
             description = NULLIF(p_payload->>'description', ''),
             is_active = COALESCE((p_payload->>'isActive')::boolean, TRUE),
             show_appbar = COALESCE((p_payload->>'showAppbar')::boolean, FALSE)
@@ -31,11 +36,21 @@ BEGIN
     ELSE
         INSERT INTO forms (
             name,
+            last_name,
+            location,
+            phone,
+            email,
+            second_email,
             description,
             is_active,
             show_appbar
         ) VALUES (
             TRIM(p_payload->>'name'),
+            NULLIF(TRIM(p_payload->>'lastName'), ''),
+            NULLIF(TRIM(p_payload->>'location'), ''),
+            NULLIF(TRIM(p_payload->>'phone'), ''),
+            NULLIF(LOWER(TRIM(p_payload->>'email')), ''),
+            NULLIF(LOWER(TRIM(p_payload->>'secondEmail')), ''),
             NULLIF(p_payload->>'description', ''),
             COALESCE((p_payload->>'isActive')::boolean, TRUE),
             COALESCE((p_payload->>'showAppbar')::boolean, FALSE)

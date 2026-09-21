@@ -4,6 +4,45 @@ export const createFormResponseValidator = [
   body("formId").isUUID().withMessage("El formId debe ser un UUID válido"),
   body("statusId").isInt({ min: 1 }).withMessage("El statusId debe ser un entero válido"),
   body("sections").isArray({ min: 1 }).withMessage("Debe enviar al menos una sección"),
+  body("name")
+    .trim()
+    .notEmpty()
+    .withMessage("name es obligatorio")
+    .isLength({ max: 50 })
+    .withMessage("name no puede exceder 50 caracteres"),
+  body("lastName")
+    .optional({ nullable: true, checkFalsy: true })
+    .trim()
+    .isLength({ max: 50 })
+    .withMessage("lastName no puede exceder 50 caracteres"),
+  body("location")
+    .optional({ nullable: true, checkFalsy: true })
+    .trim()
+    .isLength({ max: 70 })
+    .withMessage("location no puede exceder 70 caracteres"),
+  body("phone")
+    .optional({ nullable: true, checkFalsy: true })
+    .trim()
+    .isLength({ max: 20 })
+    .withMessage("phone no puede exceder 20 caracteres")
+    .matches(/^[0-9+\-\s()]+$/)
+    .withMessage("phone contiene caracteres no válidos"),
+  body("email")
+    .optional({ nullable: true, checkFalsy: true })
+    .trim()
+    .isEmail()
+    .withMessage("email debe ser válido")
+    .isLength({ max: 255 })
+    .withMessage("email no puede exceder 255 caracteres")
+    .normalizeEmail(),
+  body("secondEmail")
+    .optional({ nullable: true, checkFalsy: true })
+    .trim()
+    .isEmail()
+    .withMessage("secondEmail debe ser válido")
+    .isLength({ max: 255 })
+    .withMessage("secondEmail no puede exceder 255 caracteres")
+    .normalizeEmail(),
   body("sections.*.sectionName").isString().withMessage("sectionName debe ser texto"),
   body("sections.*.sectionStep").isInt({ min: 0 }).withMessage("sectionStep debe ser un entero válido"),
   body("sections.*.questions").isArray().withMessage("questions debe ser un arreglo"),

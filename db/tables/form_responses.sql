@@ -2,6 +2,12 @@ CREATE TABLE form_responses (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   form_id UUID NOT NULL REFERENCES forms(id) ON DELETE CASCADE,
   status_id INTEGER NOT NULL REFERENCES catalog(id),
+  name VARCHAR(50) NOT NULL,
+  last_name VARCHAR(50),
+  location VARCHAR(70),
+  phone VARCHAR(20),
+  email VARCHAR(255),
+  second_email VARCHAR(255),
   payload JSONB NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

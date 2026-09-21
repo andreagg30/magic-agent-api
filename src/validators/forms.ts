@@ -4,7 +4,42 @@ export const saveFormValidator = [
   body("name")
     .trim()
     .notEmpty()
-    .withMessage("El nombre del formulario es obligatorio"),
+    .withMessage("El nombre del formulario es obligatorio")
+    .isLength({ max: 50 })
+    .withMessage("name no puede exceder 50 caracteres"),
+  body("lastName")
+    .optional({ nullable: true, checkFalsy: true })
+    .trim()
+    .isLength({ max: 50 })
+    .withMessage("lastName no puede exceder 50 caracteres"),
+  body("location")
+    .optional({ nullable: true, checkFalsy: true })
+    .trim()
+    .isLength({ max: 70 })
+    .withMessage("location no puede exceder 70 caracteres"),
+  body("phone")
+    .optional({ nullable: true, checkFalsy: true })
+    .trim()
+    .isLength({ max: 20 })
+    .withMessage("phone no puede exceder 20 caracteres")
+    .matches(/^[0-9+\-\s()]+$/)
+    .withMessage("phone contiene caracteres no válidos"),
+  body("email")
+    .optional({ nullable: true, checkFalsy: true })
+    .trim()
+    .isEmail()
+    .withMessage("email debe ser válido")
+    .isLength({ max: 255 })
+    .withMessage("email no puede exceder 255 caracteres")
+    .normalizeEmail(),
+  body("secondEmail")
+    .optional({ nullable: true, checkFalsy: true })
+    .trim()
+    .isEmail()
+    .withMessage("secondEmail debe ser válido")
+    .isLength({ max: 255 })
+    .withMessage("secondEmail no puede exceder 255 caracteres")
+    .normalizeEmail(),
   body("description")
     .optional({ nullable: true })
     .isString()

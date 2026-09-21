@@ -1,7 +1,13 @@
 CREATE OR REPLACE FUNCTION add_form_response(
   p_form_id UUID,
   p_status_id INTEGER,
-  p_sections JSONB
+  p_sections JSONB,
+  p_name VARCHAR,
+  p_last_name VARCHAR,
+  p_location VARCHAR,
+  p_phone VARCHAR,
+  p_email VARCHAR,
+  p_second_email VARCHAR
 )
 RETURNS UUID
 LANGUAGE plpgsql
@@ -23,8 +29,21 @@ BEGIN
     RAISE EXCEPTION 'InvalidFormResponseStatus' USING ERRCODE = '22023';
   END IF;
 
-  INSERT INTO form_responses (form_id, status_id, payload)
-  VALUES (p_form_id, p_status_id, p_sections)
+  INSERT INTO form_responses (
+    form_id, status_id, payload, name, last_name, location, phone, email,
+    second_email
+  )
+  VALUES (
+    p_form_id,
+    p_status_id,
+    p_sections,
+    TRIM(p_name),
+    NULLIF(TRIM(p_last_name), ''),
+    NULLIF(TRIM(p_location), ''),
+    NULLIF(TRIM(p_phone), ''),
+    NULLIF(LOWER(TRIM(p_email)), ''),
+    NULLIF(LOWER(TRIM(p_second_email)), '')
+  )
   RETURNING id INTO v_response_id;
 
   FOR v_section IN SELECT value FROM jsonb_array_elements(p_sections) LOOP

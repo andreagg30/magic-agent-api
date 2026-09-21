@@ -7,6 +7,11 @@ AS $$
 SELECT jsonb_build_object(
     'id', f.id,
     'name', f.name,
+    'lastName', f.last_name,
+    'location', f.location,
+    'phone', f.phone,
+    'email', f.email,
+    'secondEmail', f.second_email,
     'description', f.description,
     'isActive', f.is_active,
     'showAppbar', f.show_appbar,
