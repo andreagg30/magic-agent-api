@@ -114,11 +114,7 @@ BEGIN
                         COALESCE((v_question->>'addAditionalInfo')::boolean, FALSE),
                         NULLIF(v_question->>'aditionalInfo', ''),
                         COALESCE((v_question->>'addImage')::boolean, FALSE),
-                        COALESCE(
-                            NULLIF(v_question->>'path', ''),
-                            NULLIF(v_question->'image'->>'src', ''),
-                            NULLIF(v_question->'image'->>'path', '')
-                        ),
+                        NULLIF(v_question->'image'->>'src', ''),
                         COALESCE(
                             NULLIF(v_question->'image'->>'name', ''),
                             NULLIF(v_question->'image'->>'caption', ''),

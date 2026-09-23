@@ -99,6 +99,16 @@ export const saveFormValidator = [
     .optional({ nullable: true })
     .isObject()
     .withMessage("image debe ser un objeto"),
+  body("sections.*.questions.*")
+    .custom((question: { addImage?: boolean; image?: { src?: unknown } }) => {
+      if (!question?.addImage) return true;
+      return (
+        !!question.image &&
+        typeof question.image.src === "string" &&
+        question.image.src.trim().length > 0
+      );
+    })
+    .withMessage("Cuando addImage es true, image.src es obligatorio"),
   body("sections.*.questions.*.maxLength")
     .optional({ nullable: true })
     .custom((value) => {

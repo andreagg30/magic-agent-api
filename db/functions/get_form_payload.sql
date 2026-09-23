@@ -46,7 +46,7 @@ LEFT JOIN LATERAL (
                 'image', CASE
                     WHEN q.image_path IS NOT NULL OR q.image_name IS NOT NULL THEN
                         jsonb_build_object(
-                            'path', q.image_path,
+                            'src', q.image_path,
                             'name', q.image_name
                         )
                     ELSE NULL
