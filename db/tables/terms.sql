@@ -36,6 +36,9 @@ CREATE TABLE term_attributes (
 CREATE INDEX idx_term_category_links_category_id
 ON term_category_links(category_id);
 
+CREATE UNIQUE INDEX uq_term_categories_name_normalized
+ON term_categories (LOWER(TRIM(name)));
+
 CREATE INDEX idx_term_attributes_term_id
 ON term_attributes(term_id);
 

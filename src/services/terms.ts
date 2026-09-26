@@ -42,6 +42,11 @@ const getAll = async () => {
   return result.rows.map((row) => row.term);
 };
 
+const getCategories = async () => {
+  const result = await pool.query("SELECT * FROM get_term_categories()");
+  return result.rows;
+};
+
 const getById = async (id: string) => {
   const result = await pool.query(
     "SELECT get_term_by_id($1::uuid) AS term",
@@ -58,4 +63,4 @@ const remove = async (id: string, client: PoolClient) => {
   return result.rows[0]?.deleted === true;
 };
 
-export default { create, update, getAll, getById, remove };
+export default { create, update, getAll, getCategories, getById, remove };

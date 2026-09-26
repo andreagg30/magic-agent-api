@@ -11,6 +11,7 @@ const router = Router();
 
 router.use(requireAuth);
 router.get("/", termController.getAll);
+router.get("/categories", termController.getCategories);
 router.get(
   "/:id",
   termIdParamValidator,

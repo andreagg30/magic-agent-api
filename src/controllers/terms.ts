@@ -4,6 +4,13 @@ import termService from "../services/terms.js";
 import { sendError, sendSuccess } from "../utils/api-response.js";
 
 function termError(error: any, res: Response) {
+  if (error?.code === "23505") {
+    return sendError({
+      res,
+      statusCode: 409,
+      message: "DuplicateTermCategoryName",
+    });
+  }
   if (error?.code === "23503") {
     return sendError({ res, statusCode: 400, message: "InvalidTermCategoryId" });
   }
@@ -38,6 +45,16 @@ async function getAll(_req: Request, res: Response) {
   try {
     const terms = await termService.getAll();
     return sendSuccess({ res, data: { terms } });
+  } catch (error) {
+    console.error(error);
+    return sendError({ res });
+  }
+}
+
+async function getCategories(_req: Request, res: Response) {
+  try {
+    const categories = await termService.getCategories();
+    return sendSuccess({ res, data: { categories } });
   } catch (error) {
     console.error(error);
     return sendError({ res });
@@ -99,4 +116,4 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export default { create, getAll, getById, update, remove };
+export default { create, getAll, getCategories, getById, update, remove };
