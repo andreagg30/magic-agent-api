@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION delete_term(p_term_id UUID)
+CREATE OR REPLACE FUNCTION delete_blog(p_blog_id UUID)
 RETURNS BOOLEAN
 LANGUAGE plpgsql
 AS $$
@@ -7,14 +7,13 @@ DECLARE
 BEGIN
   SELECT COALESCE(array_agg(category_id), ARRAY[]::INTEGER[])
   INTO v_category_ids
-  FROM term_category_links
-  WHERE term_id = p_term_id;
+  FROM blog_category_links
+  WHERE blog_id = p_blog_id;
 
-  DELETE FROM terms WHERE id = p_term_id;
+  DELETE FROM blogs WHERE id = p_blog_id;
   IF NOT FOUND THEN RETURN FALSE; END IF;
 
   PERFORM delete_orphan_term_categories(v_category_ids);
-
   RETURN TRUE;
 END;
 $$;

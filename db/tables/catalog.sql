@@ -22,3 +22,11 @@ INSERT INTO catalog (category_code, label) VALUES ('urgency_type', 'Crítica');
 INSERT INTO catalog (category_code, label) VALUES ('urgency_type', 'Alta');
 INSERT INTO catalog (category_code, label) VALUES ('urgency_type', 'Media');
 INSERT INTO catalog (category_code, label) VALUES ('urgency_type', 'Baja');
+
+INSERT INTO catalog (category_code, label) VALUES ('content_type', 'Texto');
+INSERT INTO catalog (category_code, label) VALUES ('content_type', 'Imagen');
+INSERT INTO catalog (category_code, label) VALUES ('content_type', 'Botón');
+INSERT INTO catalog (category_code, label) VALUES ('content_type', 'Text con imagen');
+
+INSERT INTO catalog (category_code, label) VALUES ('image_direction', 'Derecha');
+INSERT INTO catalog (category_code, label) VALUES ('image_direction', 'Izquierda');
