@@ -5,6 +5,7 @@ AS $$
 BEGIN
   UPDATE blogs SET
     title = TRIM(p_payload->>'title'),
+    image = NULLIF(TRIM(p_payload->>'image'), ''),
     short_description = NULLIF(p_payload->>'shortDescription', ''),
     is_active = COALESCE(
       NULLIF(p_payload->>'isActive', '')::BOOLEAN,

@@ -5,9 +5,10 @@ AS $$
 DECLARE
   v_blog_id UUID;
 BEGIN
-  INSERT INTO blogs (title, short_description, is_active)
+  INSERT INTO blogs (title, image, short_description, is_active)
   VALUES (
     TRIM(p_payload->>'title'),
+    NULLIF(TRIM(p_payload->>'image'), ''),
     NULLIF(p_payload->>'shortDescription', ''),
     COALESCE(NULLIF(p_payload->>'isActive', '')::BOOLEAN, TRUE)
   )

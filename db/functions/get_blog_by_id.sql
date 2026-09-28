@@ -6,6 +6,7 @@ AS $$
   SELECT jsonb_build_object(
     'id', blog.id,
     'title', blog.title,
+    'image', blog.image,
     'shortDescription', blog.short_description,
     'isActive', blog.is_active,
     'categories', COALESCE((

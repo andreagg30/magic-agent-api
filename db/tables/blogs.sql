@@ -1,6 +1,7 @@
 CREATE TABLE blogs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title VARCHAR(100) NOT NULL,
+  image TEXT,
   short_description VARCHAR(300),
   is_active BOOLEAN NOT NULL DEFAULT TRUE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),

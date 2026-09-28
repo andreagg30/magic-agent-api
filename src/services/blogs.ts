@@ -27,6 +27,7 @@ export type BlogPayload = {
   content: BlogContentPayload[];
   categories: BlogCategoryPayload[];
   title: string;
+  image?: string | null;
   shortDescription?: string | null;
   isActive?: boolean;
 };

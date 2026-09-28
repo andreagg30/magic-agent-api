@@ -11,6 +11,10 @@ export const saveBlogValidator = [
     .withMessage("title es obligatorio")
     .isLength({ max: 100 })
     .withMessage("title no puede exceder 100 caracteres"),
+  body("image")
+    .optional({ nullable: true, checkFalsy: true })
+    .isURL({ require_protocol: true })
+    .withMessage("image debe ser una URL completa válida"),
   body("shortDescription")
     .optional({ nullable: true })
     .isString()
