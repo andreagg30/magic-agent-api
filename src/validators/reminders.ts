@@ -16,9 +16,7 @@ export const saveReminderValidator = [
   body("description")
     .optional({ nullable: true })
     .isString()
-    .withMessage("description debe ser texto")
-    .isLength({ max: 400 })
-    .withMessage("description no puede exceder 400 caracteres"),
+    .withMessage("description debe ser texto"),
   body("isActive")
     .isBoolean({ strict: true })
     .withMessage("isActive debe ser booleano"),

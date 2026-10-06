@@ -1,7 +1,7 @@
 CREATE TABLE reminders (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name VARCHAR(50) NOT NULL,
-  description VARCHAR(400),
+  description TEXT,
   is_active BOOLEAN NOT NULL,
   date TIMESTAMPTZ NOT NULL,
   urgency_id INTEGER NOT NULL REFERENCES catalog(id),

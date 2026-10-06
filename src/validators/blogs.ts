@@ -11,16 +11,10 @@ export const saveBlogValidator = [
     .withMessage("title es obligatorio")
     .isLength({ max: 100 })
     .withMessage("title no puede exceder 100 caracteres"),
-  body("image")
-    .optional({ nullable: true, checkFalsy: true })
-    .isURL({ require_protocol: true })
-    .withMessage("image debe ser una URL completa válida"),
   body("shortDescription")
     .optional({ nullable: true })
     .isString()
-    .withMessage("shortDescription debe ser texto")
-    .isLength({ max: 300 })
-    .withMessage("shortDescription no puede exceder 300 caracteres"),
+    .withMessage("shortDescription debe ser texto"),
   body("isActive")
     .optional({ nullable: true })
     .isBoolean({ strict: true })
@@ -66,25 +60,19 @@ export const saveBlogValidator = [
   body("content.*.description")
     .optional({ nullable: true })
     .isString()
-    .withMessage("description del contenido debe ser texto")
-    .isLength({ max: 3000 })
-    .withMessage("description del contenido no puede exceder 3000 caracteres"),
-  body("content.*.image")
-    .optional({ nullable: true, checkFalsy: true })
-    .isURL({ require_protocol: true })
-    .withMessage("image debe ser una URL completa válida"),
+    .withMessage("description del contenido debe ser texto"),
   body("content.*.imageAttributes")
     .optional({ nullable: true })
     .isObject()
     .withMessage("imageAttributes debe ser un objeto"),
   body("content.*.imageAttributes.width")
     .optional({ nullable: true })
-    .isString()
-    .withMessage("imageAttributes.width debe ser texto"),
+    .isNumeric()
+    .withMessage("imageAttributes.width debe ser NUMBER"),
   body("content.*.imageAttributes.height")
     .optional({ nullable: true })
-    .isString()
-    .withMessage("imageAttributes.height debe ser texto"),
+    .isNumeric()
+    .withMessage("imageAttributes.height debe ser NUMBER"),
   body("content.*.imageDirection")
     .optional({ nullable: true })
     .isObject()

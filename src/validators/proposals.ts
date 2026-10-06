@@ -45,9 +45,7 @@ export const saveProposalValidator = [
   body("description")
     .optional({ nullable: true })
     .isString()
-    .withMessage("description debe ser texto")
-    .isLength({ max: 1500 })
-    .withMessage("description no puede exceder 1500 caracteres"),
+    .withMessage("description debe ser texto"),
   body("total")
     .optional(optional)
     .isDecimal({ decimal_digits: "0,2" })
@@ -102,9 +100,7 @@ export const saveProposalValidator = [
   body("notes")
     .optional({ nullable: true })
     .isString()
-    .withMessage("notes debe ser texto")
-    .isLength({ max: 500 })
-    .withMessage("notes no puede exceder 500 caracteres"),
+    .withMessage("notes debe ser texto"),
   body("gralPartyNumber")
     .optional(optional)
     .isInt({ min: 0 })
@@ -159,9 +155,7 @@ export const saveProposalValidator = [
   body("products.*.notes")
     .optional({ nullable: true })
     .isString()
-    .withMessage("Las notas del producto deben ser texto")
-    .isLength({ max: 500 })
-    .withMessage("Las notas del producto no pueden exceder 500 caracteres"),
+    .withMessage("Las notas del producto deben ser texto"),
   body("products.*.party")
     .optional({ nullable: true })
     .isArray()
@@ -217,9 +211,7 @@ function nestedReminderValidators() {
     body("reminders.*.description")
       .optional({ nullable: true })
       .isString()
-      .withMessage("La descripción del reminder debe ser texto")
-      .isLength({ max: 400 })
-      .withMessage("La descripción del reminder no puede exceder 400 caracteres"),
+      .withMessage("La descripción del reminder debe ser texto"),
     body("reminders.*.isActive")
       .isBoolean({ strict: true })
       .withMessage("isActive del reminder debe ser booleano"),

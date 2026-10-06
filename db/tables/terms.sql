@@ -3,7 +3,7 @@ CREATE TABLE terms (
   name VARCHAR(100) NOT NULL,
   image TEXT,
   icon TEXT NOT NULL,
-  description VARCHAR(3000),
+  description TEXT,
   is_active BOOLEAN NOT NULL DEFAULT TRUE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),

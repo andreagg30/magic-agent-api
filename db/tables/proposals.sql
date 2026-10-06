@@ -3,7 +3,7 @@ CREATE TABLE proposals (
   parent_id UUID REFERENCES proposals(id) ON DELETE SET NULL,
   response_id UUID REFERENCES form_responses(id) ON DELETE SET NULL,
   name VARCHAR(100),
-  description VARCHAR(1500),
+  description TEXT,
   total NUMERIC(14, 2),
   total_type_id INTEGER REFERENCES catalog(id) ON DELETE SET NULL,
   status_id INTEGER REFERENCES catalog(id) ON DELETE SET NULL,
@@ -11,7 +11,7 @@ CREATE TABLE proposals (
   is_package BOOLEAN,
   show_main_page BOOLEAN,
   show_party BOOLEAN,
-  notes VARCHAR(500),
+  notes TEXT,
   gral_party_number INTEGER,
   gral_party_children INTEGER,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -43,7 +43,7 @@ CREATE TABLE proposal_products (
   date DATE,
   new_party BOOLEAN,
   show_notes BOOLEAN,
-  notes VARCHAR(500),
+  notes TEXT,
   position INTEGER NOT NULL DEFAULT 0
 );
 

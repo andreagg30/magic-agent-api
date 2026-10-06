@@ -24,9 +24,7 @@ export const saveTermValidator = [
   body("description")
     .optional({ nullable: true })
     .isString()
-    .withMessage("description debe ser texto")
-    .isLength({ max: 3000 })
-    .withMessage("description no puede exceder 3000 caracteres"),
+    .withMessage("description debe ser texto"),
   body("isActive")
     .optional({ nullable: true })
     .isBoolean({ strict: true })
