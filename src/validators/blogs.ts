@@ -1,4 +1,11 @@
-import { body, param } from "express-validator";
+import { body, param, query } from "express-validator";
+
+export const getBlogsValidator = [
+  query("isActive")
+    .optional()
+    .isBoolean()
+    .withMessage("isActive debe ser booleano"),
+];
 
 export const blogIdParamValidator = [
   param("id").isUUID().withMessage("El id del blog debe ser un UUID válido"),

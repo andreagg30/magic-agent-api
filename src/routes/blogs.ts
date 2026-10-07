@@ -4,13 +4,19 @@ import { requireAuth } from "../middlewares/require-auth.js";
 import { validateRequest } from "../validators/validateRequest.js";
 import {
   blogIdParamValidator,
+  getBlogsValidator,
   saveBlogValidator,
 } from "../validators/blogs.js";
 
 const router = Router();
 
 router.use(requireAuth);
-router.get("/", blogController.getAll);
+router.get(
+  "/",
+  getBlogsValidator,
+  validateRequest,
+  blogController.getAll,
+);
 router.get(
   "/:id",
   blogIdParamValidator,

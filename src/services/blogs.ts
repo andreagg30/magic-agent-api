@@ -48,8 +48,11 @@ const update = async (id: string, payload: BlogPayload, client: PoolClient) => {
   return result.rows[0]?.updated === true;
 };
 
-const getAll = async () => {
-  const result = await pool.query("SELECT get_blogs() AS blog");
+const getAll = async (isActive: boolean | null = null) => {
+  const result = await pool.query(
+    "SELECT get_blogs($1::boolean) AS blog",
+    [isActive],
+  );
   return result.rows.map((row) => row.blog);
 };
 

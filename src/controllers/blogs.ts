@@ -41,9 +41,12 @@ async function create(req: Request, res: Response) {
   }
 }
 
-async function getAll(_req: Request, res: Response) {
+async function getAll(req: Request, res: Response) {
   try {
-    const blogs = await blogService.getAll();
+    const isActive = req.query.isActive === undefined
+      ? null
+      : req.query.isActive === "true";
+    const blogs = await blogService.getAll(isActive);
     return sendSuccess({ res, data: { blogs } });
   } catch (error) {
     console.error(error);
