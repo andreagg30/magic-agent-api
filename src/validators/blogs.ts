@@ -64,6 +64,12 @@ export const saveBlogValidator = [
   body("content.*.type.value")
     .isInt({ min: 1 })
     .withMessage("type.value debe ser un id de catálogo válido"),
+  body("content.*.title")
+    .optional({ nullable: true })
+    .isString()
+    .withMessage("title del contenido debe ser texto")
+    .isLength({ max: 100 })
+    .withMessage("title del contenido no puede exceder 100 caracteres"),
   body("content.*.description")
     .optional({ nullable: true })
     .isString()

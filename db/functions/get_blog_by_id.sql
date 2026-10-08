@@ -21,6 +21,7 @@ AS $$
     'content', COALESCE((
       SELECT jsonb_agg(jsonb_build_object(
         'id', content.id,
+        'title', content.title,
         'type', jsonb_build_object(
           'label', type_catalog.label,
           'value', type_catalog.id

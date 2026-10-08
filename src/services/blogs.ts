@@ -8,6 +8,7 @@ export type BlogDropdownOption = {
 
 export type BlogContentPayload = {
   type: BlogDropdownOption;
+  title?: string | null;
   description?: string | null;
   image?: string | null;
   imageAttributes?: {

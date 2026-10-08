@@ -13,6 +13,7 @@ CREATE TABLE blog_contents (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   blog_id UUID NOT NULL REFERENCES blogs(id) ON DELETE CASCADE,
   type_id INTEGER NOT NULL REFERENCES catalog(id),
+  title VARCHAR(100),
   description TEXT,
   image TEXT,
   image_attributes JSONB,

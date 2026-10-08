@@ -1,0 +1,2 @@
+ALTER TABLE blog_contents
+ADD COLUMN IF NOT EXISTS title VARCHAR(100);
