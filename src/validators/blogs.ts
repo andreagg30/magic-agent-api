@@ -70,6 +70,17 @@ export const saveBlogValidator = [
     .withMessage("title del contenido debe ser texto")
     .isLength({ max: 100 })
     .withMessage("title del contenido no puede exceder 100 caracteres"),
+  body("content.*.buttonText")
+    .optional({ nullable: true })
+    .isString()
+    .withMessage("buttonText del contenido debe ser texto")
+    .bail()
+    .isLength({ max: 60 })
+    .withMessage("buttonText del contenido no puede exceder 60 caracteres"),
+  body("content.*.goTo")
+    .optional({ nullable: true })
+    .isString()
+    .withMessage("goTo del contenido debe ser texto"),
   body("content.*.description")
     .optional({ nullable: true })
     .isString()

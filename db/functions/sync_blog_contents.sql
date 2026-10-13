@@ -10,13 +10,15 @@ BEGIN
 
   IF jsonb_typeof(p_contents) = 'array' THEN
     INSERT INTO blog_contents (
-      blog_id, type_id, title, description, image, image_attributes,
+      blog_id, type_id, title, button_text, go_to, description, image, image_attributes,
       image_direction_id, content_index, position
     )
     SELECT
       p_blog_id,
       (content->'type'->>'value')::INTEGER,
       NULLIF(TRIM(content->>'title'), ''),
+      NULLIF(content->>'buttonText', ''),
+      NULLIF(content->>'goTo', ''),
       NULLIF(content->>'description', ''),
       NULLIF(content->>'image', ''),
       CASE

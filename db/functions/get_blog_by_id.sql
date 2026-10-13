@@ -22,6 +22,8 @@ AS $$
       SELECT jsonb_agg(jsonb_build_object(
         'id', content.id,
         'title', content.title,
+        'buttonText', content.button_text,
+        'goTo', content.go_to,
         'type', jsonb_build_object(
           'label', type_catalog.label,
           'value', type_catalog.id

@@ -14,6 +14,8 @@ CREATE TABLE blog_contents (
   blog_id UUID NOT NULL REFERENCES blogs(id) ON DELETE CASCADE,
   type_id INTEGER NOT NULL REFERENCES catalog(id),
   title VARCHAR(100),
+  button_text VARCHAR(60),
+  go_to TEXT,
   description TEXT,
   image TEXT,
   image_attributes JSONB,
