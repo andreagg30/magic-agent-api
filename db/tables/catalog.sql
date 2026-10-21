@@ -30,3 +30,7 @@ INSERT INTO catalog (category_code, label) VALUES ('content_type', 'Text con ima
 
 INSERT INTO catalog (category_code, label) VALUES ('image_direction', 'Derecha');
 INSERT INTO catalog (category_code, label) VALUES ('image_direction', 'Izquierda');
+
+INSERT INTO catalog (category_code, label) VALUES ('lesson_type', 'Contenido Descargable');
+INSERT INTO catalog (category_code, label) VALUES ('lesson_type', 'Video de YouTube');
+INSERT INTO catalog (category_code, label) VALUES ('lesson_type', 'Blog');
