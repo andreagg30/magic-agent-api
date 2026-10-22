@@ -22,6 +22,13 @@ export type ProposalPaymentPayload = {
   date: string;
 };
 
+export type ProposalItineraryItemPayload = {
+  name: string;
+  description: string;
+  reminder?: string | null;
+  date?: string | null;
+};
+
 export type ProposalPayload = {
   parentId?: string | null;
   responseId?: string | null;
@@ -43,6 +50,7 @@ export type ProposalPayload = {
   party?: unknown[] | null;
   reminders?: ProposalReminderPayload[] | null;
   payments?: ProposalPaymentPayload[] | null;
+  itinerary?: ProposalItineraryItemPayload[] | null;
 };
 
 const create = async (payload: ProposalPayload, client: PoolClient) => {

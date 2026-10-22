@@ -94,6 +94,7 @@ BEGIN
 
   PERFORM sync_proposal_reminders(p_proposal_id, p_payload->'reminders');
   PERFORM sync_proposal_payments(p_proposal_id, p_payload->'payments');
+  PERFORM sync_proposal_itinerary(p_proposal_id, p_payload->'itinerary');
 
   RETURN TRUE;
 END;

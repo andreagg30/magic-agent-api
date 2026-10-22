@@ -166,6 +166,34 @@ export const saveProposalValidator = [
     .isArray()
     .withMessage("party debe ser un arreglo"),
 
+  body("itinerary")
+    .optional({ nullable: true })
+    .isArray()
+    .withMessage("itinerary debe ser un arreglo"),
+  body("itinerary.*")
+    .isObject()
+    .withMessage("Cada elemento de itinerary debe ser un objeto"),
+  body("itinerary.*.name")
+    .isString()
+    .withMessage("name de itinerary debe ser texto")
+    .bail()
+    .trim()
+    .notEmpty()
+    .withMessage("name de itinerary es obligatorio")
+    .isLength({ max: 50 })
+    .withMessage("name de itinerary no puede exceder 50 caracteres"),
+  body("itinerary.*.description")
+    .isString()
+    .withMessage("description de itinerary debe ser texto"),
+  body("itinerary.*.reminder")
+    .optional({ nullable: true })
+    .isString()
+    .withMessage("reminder de itinerary debe ser texto"),
+  body("itinerary.*.date")
+    .optional(optional)
+    .isISO8601({ strict: true })
+    .withMessage("date de itinerary debe ser ISO 8601 válida"),
+
   body("reminders")
     .optional({ nullable: true })
     .isArray()

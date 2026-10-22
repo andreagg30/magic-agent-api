@@ -128,6 +128,17 @@ END,
       FROM proposal_party_members ppm
       WHERE ppm.proposal_id = p.id AND ppm.proposal_product_id IS NULL
     ), '[]'::JSONB),
+    'itinerary', COALESCE((
+      SELECT jsonb_agg(jsonb_build_object(
+        'id', itinerary.id,
+        'name', itinerary.name,
+        'description', itinerary.description,
+        'reminder', itinerary.reminder,
+        'date', itinerary.date
+      ) ORDER BY itinerary.position)
+      FROM proposal_itinerary_items itinerary
+      WHERE itinerary.proposal_id = p.id
+    ), '[]'::JSONB),
     'reminders', CASE
       WHEN p_include_details THEN COALESCE((
         SELECT jsonb_agg(jsonb_build_object(
