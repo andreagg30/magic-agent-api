@@ -1,0 +1,9 @@
+CREATE OR REPLACE FUNCTION delete_user(p_user_id UUID)
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  DELETE FROM users WHERE id = p_user_id;
+  RETURN FOUND;
+END;
+$$;

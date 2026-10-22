@@ -93,8 +93,19 @@ const getAll = async () => {
   return result.rows;
 };
 
-const deleteOneUser = () => {
-  return;
+const getByIdWithProposals = async (userId: string) => {
+  const result = await pool.query("SELECT get_user_by_id_with_proposals($1::uuid) AS user", [userId]);
+  return result.rows[0].user;
+};
+
+const update = async (userId: string, data: Record<string, unknown>) => {
+  const result = await pool.query("SELECT update_user($1::uuid, $2::jsonb) AS user", [userId, JSON.stringify(data)]);
+  return result.rows[0].user;
+};
+
+const deleteOneUser = async (userId: string) => {
+  const result = await pool.query("SELECT delete_user($1::uuid) AS deleted", [userId]);
+  return result.rows[0].deleted;
 };
 
 export default {
@@ -104,4 +115,6 @@ export default {
   getUserById,
   deleteOneUser,
   someUserByEmail,
+  getByIdWithProposals,
+  update,
 };

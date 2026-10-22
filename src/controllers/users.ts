@@ -105,6 +105,7 @@ async function signUp(req: Request, res: Response) {
     phone,
     password,
     email_verified = false,
+    user_type_id
   } = req.body;
   let accessToken: string | undefined;
   let refreshToken: string | undefined;
@@ -130,7 +131,7 @@ async function signUp(req: Request, res: Response) {
       email,
       phone,
       password: passwordHash,
-      user_type_id: 2, // user_type_id for regular users
+      user_type_id: user_type_id || 2, // user_type_id for regular users
       email_verified,
       client,
     });
@@ -255,7 +256,55 @@ async function getAll(req: Request, res: Response) {
   }
 }
 
+async function getByIdWithProposals(req: Request, res: Response) {
+  try {
+    const user = await userService.getByIdWithProposals(req.params.id as string);
+    if (!user) return sendError({ res, statusCode: 404, message: "UserNotFound" });
+    return sendSuccess({ res, data: { user } });
+  } catch (error) {
+    console.error(error);
+    return sendError({ res });
+  }
+}
+
+async function update(req: Request, res: Response) {
+  try {
+    const data = { ...req.body };
+    if (data.password !== undefined) {
+      data.password_hash = await bcrypt.hash(data.password, 10);
+      delete data.password;
+    }
+    const user = await userService.update(req.params.id as string, data);
+    if (!user) return sendError({ res, statusCode: 404, message: "UserNotFound" });
+    return sendSuccess({ res, data: { user } });
+  } catch (error: any) {
+    if (error.code === "23505") {
+      return sendError({ res, statusCode: 409, message: "EmailAlreadyRegistered" });
+    }
+    if (error.code === "23503" || error.code === "22023") {
+      return sendError({ res, statusCode: 400, message: "InvalidUserType" });
+    }
+    console.error(error);
+    return sendError({ res });
+  }
+}
+
+async function remove(req: AuthRequest, res: Response) {
+  try {
+    const deleted = await userService.deleteOneUser(req.params.id as string);
+    if (!deleted) return sendError({ res, statusCode: 404, message: "UserNotFound" });
+    if (req.user?.userId === req.params.id) clearAuthCookies(res);
+    return sendSuccess({ res });
+  } catch (error) {
+    console.error(error);
+    return sendError({ res });
+  }
+}
+
 export default {
+  getByIdWithProposals,
+  update,
+  remove,
   getAll,
   login,
   getUserById,

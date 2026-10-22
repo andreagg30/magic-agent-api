@@ -1,4 +1,29 @@
-import { body } from "express-validator";
+import { body, param } from "express-validator";
+
+const editableUserFields = ["first_name", "last_name", "email", "phone", "password", "user_type_id", "email_verified", "is_active"];
+
+export const userIdValidator = [param("id").isUUID().withMessage("Invalid user ID")];
+
+export const updateUserValidator = [
+  body().custom((value) => {
+    if (!value || typeof value !== "object" || Array.isArray(value)
+      || !Object.keys(value).length
+      || Object.keys(value).some((key) => !editableUserFields.includes(key))) {
+      throw new Error("Provide at least one editable user field; unknown fields are not allowed");
+    }
+    return true;
+  }),
+  ...["first_name", "last_name"].map((field) =>
+    body(field).optional().isString().bail().trim().isLength({ min: 2, max: 100 })),
+  body("email").optional().isString().bail().trim().isEmail().isLength({ max: 255 }).normalizeEmail(),
+  body("phone").optional({ values: "null" }).isString().bail().trim().isLength({ max: 20 })
+    .matches(/^[0-9+\-\s()]*$/),
+  body("password").optional().isString().bail().isLength({ min: 8, max: 100 })
+    .matches(/[A-Z]/).matches(/[a-z]/).matches(/[0-9]/),
+  body("user_type_id").optional().isInt({ min: 1 }).toInt(),
+  body("email_verified").optional().isBoolean({ strict: true }),
+  body("is_active").optional().isBoolean({ strict: true }),
+];
 
 export const getUserValidator = [
   body("email")
