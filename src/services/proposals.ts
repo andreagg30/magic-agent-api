@@ -29,7 +29,28 @@ export type ProposalItineraryItemPayload = {
   date?: string | null;
 };
 
+export type ProposalOptionProductPayload = {
+  productId?: string;
+  product?: { id: string };
+  addAdditionalInfo?: boolean;
+  fromDate?: string;
+  toDate?: string;
+  date?: string;
+  showNotes?: boolean;
+  notes?: string;
+};
+
+export type ProposalOptionPayload = {
+  products?: ProposalOptionProductPayload[];
+  description?: string;
+  total?: string | number;
+};
+
 export type ProposalPayload = {
+  addExtras?: boolean;
+  addVariations?: boolean;
+  extras?: ProposalOptionPayload[];
+  variations?: ProposalOptionPayload[];
   parentId?: string | null;
   responseId?: string | null;
   name?: string | null;

@@ -49,9 +49,13 @@ AS $$
     ), '[]'::JSONB),
     'total', p.total,
     'statusId', p.status_id,
+    'addExtras', p.add_extras,
+    'addVariations', p.add_variations,
+    'extras', get_proposal_options(p.id, 'extras'),
+    'variations', get_proposal_options(p.id, 'variations'),
  'totalType', CASE
       WHEN ty.id IS NULL THEN NULL
-      ELSE jsonb_build_object('id', ty.id, 'label', ty.label)
+      ELSE jsonb_build_object('value', ty.id, 'label', ty.label)
 END,
     'status', CASE
       WHEN c.id IS NULL THEN NULL

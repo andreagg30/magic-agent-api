@@ -92,6 +92,8 @@ BEGIN
     FROM jsonb_array_elements(p_payload->'party') WITH ORDINALITY AS entries(member, ordinality);
   END IF;
 
+  PERFORM sync_proposal_options(p_proposal_id, p_payload);
+
   PERFORM sync_proposal_reminders(p_proposal_id, p_payload->'reminders');
   PERFORM sync_proposal_payments(p_proposal_id, p_payload->'payments');
   PERFORM sync_proposal_itinerary(p_proposal_id, p_payload->'itinerary');

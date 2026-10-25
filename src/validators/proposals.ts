@@ -28,6 +28,8 @@ export const proposalResponseIdParamValidator = [
 ];
 
 export const saveProposalValidator = [
+  ...proposalOptionValidators("extras", "addExtras"),
+  ...proposalOptionValidators("variations", "addVariations"),
   body("parentId")
     .optional(optional)
     .isUUID()
@@ -217,6 +219,39 @@ export const saveProposalValidator = [
   ...nestedReminderValidators(),
   ...nestedPaymentValidators(),
 ];
+
+function proposalOptionValidators(path: string, flag: string) {
+  return [
+    body(flag).optional().isBoolean({ strict: true }),
+    body(path).optional().isArray(),
+    body(`${path}.*`).isObject({ strict: true }),
+    body(`${path}.*.description`).optional().isString().bail().isLength({ max: 400 }),
+    body(`${path}.*.total`).optional({ checkFalsy: true })
+      .isDecimal({ decimal_digits: "0,2" })
+      .custom((value) => Math.abs(Number(value)) < 1_000_000_000_000),
+    body(`${path}.*.products`).optional().isArray(),
+    body(`${path}.*.products.*`).isObject({ strict: true }).bail()
+      .custom((product) => {
+        if (!product.productId && !product.product?.id) throw new Error("productId or product.id is required");
+        if (product.productId && product.product?.id && product.productId !== product.product.id) {
+          throw new Error("productId and product.id must match");
+        }
+        if (product.party !== undefined || product.newParty !== undefined || product.partyNumber !== undefined) {
+          throw new Error("Extras and variations products do not accept party, newParty or partyNumber");
+        }
+        return true;
+      }),
+    body(`${path}.*.products.*.productId`).optional().isUUID(),
+    body(`${path}.*.products.*.product`).optional().isObject({ strict: true }),
+    body(`${path}.*.products.*.product.id`).optional().isUUID(),
+    ...["addAdditionalInfo", "showNotes"].map((field) =>
+      body(`${path}.*.products.*.${field}`).optional().isBoolean({ strict: true })),
+    ...["fromDate", "toDate", "date"].map((field) =>
+      body(`${path}.*.products.*.${field}`).optional({ checkFalsy: true })
+        .isISO8601({ strict: true, strictSeparator: true })),
+    body(`${path}.*.products.*.notes`).optional().isString().bail().isLength({ max: 150 }),
+  ];
+}
 
 function uniqueOptionalIds(items: Array<{ id?: string }>) {
   if (!Array.isArray(items)) return true;
