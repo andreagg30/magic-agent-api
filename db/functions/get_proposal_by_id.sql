@@ -87,6 +87,7 @@ END,
             WHEN pro.id IS NULL THEN NULL
             ELSE jsonb_build_object(
               'id', pro.id,
+              'contents', get_product_contents(pro.id),
               'name', pro.name,
               'description', pro.description,
               'isActive', pro.is_active,

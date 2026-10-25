@@ -7,6 +7,7 @@ RETURNS JSONB LANGUAGE sql STABLE AS $$
         'id', op.id, 'productId', op.product_id, 'productName', p.name,
         'product', CASE WHEN p.id IS NULL THEN NULL ELSE jsonb_build_object(
           'id', p.id, 'name', p.name, 'description', p.description,
+          'contents', get_product_contents(p.id),
           'isActive', p.is_active, 'date', p.requires_date, 'dateRange', p.requires_date_range,
           'partyRequired', p.party_required, 'bdayRequired', p.bday_required,
           'icon', p.icon, 'createdAt', p.created_at, 'updatedAt', p.updated_at,

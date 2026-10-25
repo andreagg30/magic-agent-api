@@ -1,7 +1,20 @@
 import type { PoolClient } from "pg";
 import { pool } from "../database/db-connection.js";
 
-type ProductPayload = {
+export type ProductContentPayload = {
+  type: { value: number; label?: string };
+  title?: string | null;
+  buttonText?: string | null;
+  goTo?: string | null;
+  description?: string | null;
+  image?: string | null;
+  imageAttributes?: { width?: number | string | null; height?: number | string | null; [key: string]: unknown } | null;
+  imageDirection?: { value?: number | null; label?: string } | null;
+  index?: number | null;
+};
+
+export type ProductPayload = {
+  contents?: ProductContentPayload[];
   name: string;
   description?: string | null;
   isActive: boolean;
@@ -27,10 +40,18 @@ const values = (payload: ProductPayload) => [
 
 const getAll = async (productTypeId?: string) => {
   const result = await pool.query(
-    "SELECT * FROM get_products($1::uuid)",
+    "SELECT p.*, get_product_contents(p.id) AS contents FROM get_products($1::uuid) p",
     [productTypeId ?? null],
   );
   return result.rows;
+};
+
+const getById = async (id: string) => {
+  const result = await pool.query(
+    "SELECT get_product_by_id($1::uuid) AS product",
+    [id],
+  );
+  return result.rows[0]?.product;
 };
 
 const create = async (payload: ProductPayload, client: PoolClient) => {
@@ -41,7 +62,11 @@ const create = async (payload: ProductPayload, client: PoolClient) => {
     ) AS id`,
     values(payload),
   );
-  return result.rows[0]?.id as string;
+  const id = result.rows[0]?.id as string;
+  if (payload.contents !== undefined) {
+    await client.query("SELECT sync_product_contents($1::uuid, $2::jsonb)", [id, JSON.stringify(payload.contents)]);
+  }
+  return id;
 };
 
 const update = async (
@@ -56,7 +81,11 @@ const update = async (
     ) AS updated`,
     [id, ...values(payload)],
   );
-  return result.rows[0]?.updated === true;
+  const updated = result.rows[0]?.updated === true;
+  if (updated && payload.contents !== undefined) {
+    await client.query("SELECT sync_product_contents($1::uuid, $2::jsonb)", [id, JSON.stringify(payload.contents)]);
+  }
+  return updated;
 };
 
 const remove = async (id: string, client: PoolClient) => {
@@ -67,4 +96,4 @@ const remove = async (id: string, client: PoolClient) => {
   return result.rows[0]?.deleted === true;
 };
 
-export default { getAll, create, update, remove };
+export default { getAll, getById, create, update, remove };

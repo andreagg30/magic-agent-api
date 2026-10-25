@@ -68,6 +68,7 @@ AS $$
     'products', COALESCE((
       SELECT jsonb_agg(jsonb_build_object(
         'id', product.id,
+        'contents', get_product_contents(product.id),
         'name', product.name,
         'description', product.description,
         'isActive', product.is_active,

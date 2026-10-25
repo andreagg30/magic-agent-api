@@ -12,6 +12,12 @@ const router = Router();
 
 router.use(requireAuth);
 router.get("/", getProductsValidator, validateRequest, productController.getAll);
+router.get(
+  "/:id",
+  productIdParamValidator,
+  validateRequest,
+  productController.getById,
+);
 router.post("/", saveProductValidator, validateRequest, productController.create);
 router.put(
   "/:id",

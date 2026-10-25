@@ -5,7 +5,10 @@ import { sendError, sendSuccess } from "../utils/api-response.js";
 
 function productError(error: any, res: Response) {
   if (error?.code === "23503") {
-    return sendError({ res, statusCode: 400, message: "InvalidProductTypeId" });
+    const message = error?.table === "product_contents"
+      ? "InvalidProductContentReference"
+      : "InvalidProductTypeId";
+    return sendError({ res, statusCode: 400, message });
   }
   if (error?.code === "23514") {
     return sendError({ res, statusCode: 400, message: "InvalidProductConfiguration" });
@@ -19,6 +22,19 @@ async function getAll(req: Request, res: Response) {
     const productTypeId = req.query.productTypeId as string | undefined;
     const products = await productService.getAll(productTypeId);
     return sendSuccess({ res, data: { products } });
+  } catch (error) {
+    console.error(error);
+    return sendError({ res });
+  }
+}
+
+async function getById(req: Request, res: Response) {
+  try {
+    const product = await productService.getById(req.params.id as string);
+    if (!product) {
+      return sendError({ res, statusCode: 404, message: "ProductNotFound" });
+    }
+    return sendSuccess({ res, data: { product } });
   } catch (error) {
     console.error(error);
     return sendError({ res });
@@ -88,4 +104,4 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export default { getAll, create, update, remove };
+export default { getAll, getById, create, update, remove };
