@@ -16,7 +16,7 @@ AS $$
     'created_at', u.created_at,
     'updated_at', u.updated_at,
     'proposals', COALESCE((
-      SELECT jsonb_agg(get_proposal_by_id(p.id, FALSE, FALSE) ORDER BY p.created_at DESC)
+      SELECT jsonb_agg(get_proposal_by_id(p.id, FALSE, TRUE) ORDER BY p.created_at DESC)
       FROM proposal_users pu
       JOIN proposals p ON p.id = pu.proposal_id
       WHERE pu.user_id = u.id

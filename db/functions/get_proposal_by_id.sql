@@ -55,7 +55,7 @@ AS $$
 END,
     'status', CASE
       WHEN c.id IS NULL THEN NULL
-      ELSE jsonb_build_object('id', c.id, 'label', c.label)
+      ELSE jsonb_build_object('value', c.id, 'label', c.label)
     END,
     'isActive', p.is_active,
     'isPackage', p.is_package,
