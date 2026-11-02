@@ -59,6 +59,7 @@ export type ProposalPayload = {
   total?: string | number | null;
   totalType?: number | null;
   statusId?: number | null;
+  style?: number | null;
   isActive: boolean;
   isPackage?: boolean | null;
   showMainPage?: boolean | null;

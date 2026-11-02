@@ -34,3 +34,8 @@ INSERT INTO catalog (category_code, label) VALUES ('image_direction', 'Izquierda
 INSERT INTO catalog (category_code, label) VALUES ('lesson_type', 'Contenido Descargable');
 INSERT INTO catalog (category_code, label) VALUES ('lesson_type', 'Video de YouTube');
 INSERT INTO catalog (category_code, label) VALUES ('lesson_type', 'Blog');
+
+INSERT INTO catalog (category_code, label) VALUES ('template_type', 'Disney World');
+INSERT INTO catalog (category_code, label) VALUES ('template_type', 'Disneyland');
+INSERT INTO catalog (category_code, label) VALUES ('template_type', 'Mario');
+INSERT INTO catalog (category_code, label) VALUES ('template_type', 'Disney Cruise Line');

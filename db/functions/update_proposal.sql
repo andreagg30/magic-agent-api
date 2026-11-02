@@ -15,6 +15,8 @@ BEGIN
     total = NULLIF(p_payload->>'total', '')::NUMERIC(14, 2),
     total_type_id = NULLIF(p_payload->>'totalType', '')::INTEGER,
     status_id = NULLIF(p_payload->>'statusId', '')::INTEGER,
+    style_id = CASE WHEN p_payload ? 'style'
+      THEN (p_payload->>'style')::INTEGER ELSE style_id END,
     is_active = (p_payload->>'isActive')::BOOLEAN,
     is_package = NULLIF(p_payload->>'isPackage', '')::BOOLEAN,
     show_main_page = NULLIF(p_payload->>'showMainPage', '')::BOOLEAN,

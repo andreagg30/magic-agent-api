@@ -49,6 +49,9 @@ AS $$
     ), '[]'::JSONB),
     'total', p.total,
     'statusId', p.status_id,
+    'style', CASE WHEN style_catalog.id IS NULL THEN NULL ELSE
+      jsonb_build_object('label', style_catalog.label, 'value', style_catalog.id)
+    END,
     'addExtras', p.add_extras,
     'addVariations', p.add_variations,
     'extras', get_proposal_options(p.id, 'extras'),
@@ -191,6 +194,7 @@ END,
   FROM proposals p
   LEFT JOIN catalog c ON c.id = p.status_id
   LEFT JOIN catalog ty ON ty.id = p.total_type_id
+  LEFT JOIN catalog style_catalog ON style_catalog.id = p.style_id
 
   WHERE p.id = p_proposal_id;
 $$;

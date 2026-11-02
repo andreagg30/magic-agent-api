@@ -28,6 +28,10 @@ export const proposalResponseIdParamValidator = [
 ];
 
 export const saveProposalValidator = [
+  body("style")
+    .optional({ nullable: true })
+    .isInt({ min: 1, max: 2147483647 })
+    .withMessage("style debe ser un id entero positivo de catalog o null"),
   ...proposalOptionValidators("extras", "addExtras"),
   ...proposalOptionValidators("variations", "addVariations"),
   body("parentId")
