@@ -2,6 +2,54 @@ import { body, param, query } from "express-validator";
 
 const optional = { nullable: true, checkFalsy: true } as const;
 
+export const selectProposalValidator = [
+  body("selectedVariation").exists({ values: "undefined" }).bail()
+    .custom((value) => value === null || (typeof value === "object" && !Array.isArray(value))),
+  body("selectedExtras").isArray(),
+  body("selectedExtras.*").isObject({ strict: true }),
+  body("party").isArray(),
+  body("party.*").isObject({ strict: true }),
+  ...partyMemberValidators("party.*"),
+  body("billingAddress").isObject({ strict: true }),
+  body("billingAddress.country").exists({ values: "undefined" }).bail()
+    .custom((value) => value === null || (
+      typeof value === "object" && !Array.isArray(value) &&
+      typeof value.label === "string" &&
+      (typeof value.value === "string" || typeof value.value === "number")
+    )),
+  ...["line1", "line2", "city", "state", "zip", "phone"].map((field) =>
+    body(`billingAddress.${field}`).isString()),
+  body().custom((payload) => {
+    const options = [payload.selectedVariation, ...(Array.isArray(payload.selectedExtras) ? payload.selectedExtras : [])].filter((option) => option !== null);
+    for (const option of options) {
+      if (!option || !Number.isInteger(option.index) || option.index < 0 ||
+        (option.products != null && !Array.isArray(option.products)) ||
+        (option.total != null && !/^(\d+)(\.\d{1,2})?$/.test(String(option.total))) ||
+        Number(option.total) >= 1_000_000_000_000) {
+        throw new Error("Each selection requires a nonnegative integer index, optional products array and optional nonnegative total with at most two decimals");
+      }
+    }
+    return true;
+  }),
+  ...["selectedVariation.products.*", "selectedExtras.*.products.*"].flatMap((path) => [
+    body(path).isObject({ strict: true }).bail().custom((product) => {
+      const id = product.productId ?? product.product?.id;
+      if (typeof id !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+        throw new Error("A valid productId or product.id is required");
+      }
+      if (product.productId && product.product?.id && product.productId !== product.product.id) {
+        throw new Error("productId and product.id must match");
+      }
+      return true;
+    }),
+    ...["addAdditionalInfo", "showNotes"].map((field) =>
+      body(`${path}.${field}`).optional().isBoolean({ strict: true })),
+    ...["fromDate", "toDate", "date"].map((field) =>
+      body(`${path}.${field}`).optional({ checkFalsy: true }).isISO8601({ strict: true, strictSeparator: true })),
+    body(`${path}.notes`).optional().isString(),
+  ]),
+];
+
 export const getProposalsValidator = [
   query("isPackage")
     .optional()

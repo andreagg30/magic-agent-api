@@ -15,6 +15,8 @@ CREATE TABLE catalog (
 
 INSERT INTO catalog (category_code, label) VALUES ('form_response_status', 'Reservado');
 
+INSERT INTO catalog (category_code, label) VALUES ('form_response_status', 'Cotización aprobada');
+
 INSERT INTO catalog (category_code, label) VALUES ('currency_type', 'Dólares estadounidenses - USD');
 INSERT INTO catalog (category_code, label) VALUES ('currency_type', 'Pesos mexicanos - MXN');
 

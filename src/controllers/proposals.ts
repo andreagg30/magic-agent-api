@@ -124,4 +124,23 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export default { create, getAll, getById, getByResponseId, update, remove };
+async function select(req: Request, res: Response) {
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+    const selected = await proposalService.select(req.params.id as string, req.body, client);
+    if (!selected) {
+      await client.query("ROLLBACK");
+      return sendError({ res, statusCode: 404, message: "ProposalNotFound" });
+    }
+    await client.query("COMMIT");
+    return sendSuccess({ res, message: "ProposalSelected" });
+  } catch (error) {
+    await client.query("ROLLBACK").catch(() => null);
+    return proposalError(error, res);
+  } finally {
+    client.release();
+  }
+}
+
+export default { create, getAll, getById, getByResponseId, update, remove, select };

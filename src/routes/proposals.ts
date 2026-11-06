@@ -7,10 +7,18 @@ import {
   proposalIdParamValidator,
   proposalResponseIdParamValidator,
   saveProposalValidator,
+  selectProposalValidator,
 } from "../validators/proposals.js";
 const router = Router();
 
 router.use(requireAuth);
+router.post(
+  "/:id/selection",
+  proposalIdParamValidator,
+  selectProposalValidator,
+  validateRequest,
+  proposalController.select,
+);
 router.get(
   "/",
   getProposalsValidator,

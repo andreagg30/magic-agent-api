@@ -131,4 +131,34 @@ const remove = async (id: string, client: PoolClient) => {
   return result.rows[0]?.deleted === true;
 };
 
-export default { create, update, getAll, getById, getByResponseId, remove };
+export type SelectedProposalOption = {
+  index: number;
+  description?: string | null;
+  total?: string | number | null;
+  products?: (ProposalOptionProductPayload & { id: string; productId: string; productName?: string })[] | null;
+};
+
+export type ProposalSelectionPayload = {
+  selectedVariation: SelectedProposalOption | null;
+  selectedExtras: SelectedProposalOption[];
+  party: unknown[];
+  billingAddress: {
+    country: { label: string; value: string | number } | null;
+    line1: string;
+    line2: string;
+    city: string;
+    state: string;
+    zip: string;
+    phone: string;
+  };
+};
+
+const select = async (id: string, payload: ProposalSelectionPayload, client: PoolClient) => {
+  const result = await client.query(
+    "SELECT select_proposal($1::uuid, $2::jsonb) AS selected",
+    [id, JSON.stringify(payload)],
+  );
+  return result.rows[0]?.selected === true;
+};
+
+export default { create, update, getAll, getById, getByResponseId, remove, select };

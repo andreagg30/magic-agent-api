@@ -48,6 +48,17 @@ AS $$
       WHERE pu.proposal_id = p.id
     ), '[]'::JSONB),
     'total', p.total,
+    'billingAddress', CASE WHEN p.billing_line1 IS NULL THEN NULL ELSE jsonb_build_object(
+      'country', CASE WHEN p.billing_country_value IS NULL THEN NULL ELSE jsonb_build_object(
+        'value', p.billing_country_value, 'label', p.billing_country_label
+      ) END,
+      'line1', p.billing_line1,
+      'line2', p.billing_line2,
+      'city', p.billing_city,
+      'state', p.billing_state,
+      'zip', p.billing_zip,
+      'phone', p.billing_phone
+    ) END,
     'statusId', p.status_id,
     'style', CASE WHEN style_catalog.id IS NULL THEN NULL ELSE
       jsonb_build_object('label', style_catalog.label, 'value', style_catalog.id)
