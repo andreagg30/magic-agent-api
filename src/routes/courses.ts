@@ -4,12 +4,15 @@ import { requireAuth } from "../middlewares/require-auth.js";
 import { validateRequest } from "../validators/validateRequest.js";
 import {
   courseIdParamValidator,
+  courseProgressValidator,
   saveCourseValidator,
 } from "../validators/courses.js";
 
 const router = Router();
 
 router.use(requireAuth);
+router.post("/:id/progress", courseIdParamValidator, courseProgressValidator,
+  validateRequest, courseController.completeLesson);
 router.get("/", courseController.getAll);
 router.get(
   "/:id",

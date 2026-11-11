@@ -99,3 +99,43 @@ AS $$
   FROM courses course
   WHERE course.id = p_course_id;
 $$;
+
+-- User-aware overload; the original signature remains available for existing callers.
+CREATE OR REPLACE FUNCTION get_course_by_id(p_course_id UUID, p_user_id UUID)
+RETURNS JSONB LANGUAGE sql STABLE AS $$
+  WITH lessons AS (
+    SELECT lesson.id, module.position AS module_position, lesson.position,
+      EXISTS (
+        SELECT 1 FROM course_user_progress progress
+        WHERE progress.user_id = p_user_id AND progress.course_id = p_course_id
+          AND progress.lesson_id = lesson.id
+      ) AS completed
+    FROM course_lessons lesson
+    JOIN course_modules module ON module.id = lesson.module_id
+    WHERE module.course_id = p_course_id
+  ), base AS (
+    SELECT get_course_by_id(p_course_id) AS course
+  )
+  SELECT CASE WHEN course IS NULL THEN NULL ELSE course || jsonb_build_object(
+    'userProgress', COALESCE((
+      SELECT ROUND(100.0 * COUNT(*) FILTER (WHERE completed) / NULLIF(COUNT(*), 0), 2)
+      FROM lessons
+    ), 0),
+    'currentLessonId', (
+      SELECT id FROM lessons WHERE NOT completed
+      ORDER BY module_position, position, id LIMIT 1
+    ),
+    'modules', COALESCE((
+      SELECT jsonb_agg(module || jsonb_build_object(
+        'lessons', COALESCE((
+          SELECT jsonb_agg(lesson || jsonb_build_object(
+            'isCompleted', COALESCE((SELECT completed FROM lessons WHERE id = (lesson->>'id')::UUID), FALSE)
+          ) ORDER BY lesson_order)
+          FROM jsonb_array_elements(module->'lessons') WITH ORDINALITY AS l(lesson, lesson_order)
+        ), '[]'::JSONB)
+      ) ORDER BY module_order)
+      FROM jsonb_array_elements(course->'modules') WITH ORDINALITY AS m(module, module_order)
+    ), '[]'::JSONB)
+  ) END
+  FROM base;
+$$;

@@ -75,10 +75,10 @@ const getAll = async () => {
   return result.rows.map((row) => row.course);
 };
 
-const getById = async (id: string) => {
+const getById = async (id: string, userId: string) => {
   const result = await pool.query(
-    "SELECT get_course_by_id($1::uuid) AS course",
-    [id],
+    "SELECT get_course_by_id($1::uuid, $2::uuid) AS course",
+    [id, userId],
   );
   return result.rows[0]?.course;
 };
@@ -91,4 +91,12 @@ const remove = async (id: string, client: PoolClient) => {
   return result.rows[0]?.deleted === true;
 };
 
-export default { create, update, getAll, getById, remove };
+const completeLesson = async (userId: string, courseId: string, lessonId: string) => {
+  const result = await pool.query(
+    "SELECT complete_course_lesson($1::uuid, $2::uuid, $3::uuid) AS completed",
+    [userId, courseId, lessonId],
+  );
+  return result.rows[0]?.completed === true;
+};
+
+export default { create, update, getAll, getById, remove, completeLesson };

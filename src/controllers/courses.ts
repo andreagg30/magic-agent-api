@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import type { AuthRequest } from "../middlewares/require-auth.js";
 import { pool } from "../database/db-connection.js";
 import courseService from "../services/courses.js";
 import { sendError, sendSuccess } from "../utils/api-response.js";
@@ -52,9 +53,10 @@ async function getAll(_req: Request, res: Response) {
   }
 }
 
-async function getById(req: Request, res: Response) {
+async function getById(req: AuthRequest, res: Response) {
   try {
-    const course = await courseService.getById(req.params.id as string);
+    if (!req.user?.userId) return sendError({ res, statusCode: 401, message: "Unauthorized" });
+    const course = await courseService.getById(req.params.id as string, req.user.userId);
     if (!course) {
       return sendError({ res, statusCode: 404, message: "CourseNotFound" });
     }
@@ -107,4 +109,15 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export default { create, getAll, getById, update, remove };
+async function completeLesson(req: AuthRequest, res: Response) {
+  try {
+    if (!req.user?.userId) return sendError({ res, statusCode: 401, message: "Unauthorized" });
+    const completed = await courseService.completeLesson(req.user.userId, req.params.id as string, req.body.lessonId);
+    if (!completed) return sendError({ res, statusCode: 404, message: "CourseLessonNotFound" });
+    return sendSuccess({ res, message: "CourseLessonCompleted" });
+  } catch (error) {
+    return courseError(error, res);
+  }
+}
+
+export default { create, getAll, getById, update, remove, completeLesson };

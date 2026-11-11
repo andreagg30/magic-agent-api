@@ -1,5 +1,7 @@
 import { body, param } from "express-validator";
 
+export const courseProgressValidator = [body("lessonId").isUUID()];
+
 export const courseIdParamValidator = [
   param("id").isUUID().withMessage("El id del curso debe ser un UUID válido"),
 ];
