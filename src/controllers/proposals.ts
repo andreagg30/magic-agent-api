@@ -128,13 +128,13 @@ async function select(req: Request, res: Response) {
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
-    const selected = await proposalService.select(req.params.id as string, req.body, client);
-    if (!selected) {
+    const proposalId = await proposalService.select(req.params.id as string, req.body, client);
+    if (!proposalId) {
       await client.query("ROLLBACK");
       return sendError({ res, statusCode: 404, message: "ProposalNotFound" });
     }
     await client.query("COMMIT");
-    return sendSuccess({ res, message: "ProposalSelected" });
+    return sendSuccess({ res, message: "ProposalSelected", data: { proposalId } });
   } catch (error) {
     await client.query("ROLLBACK").catch(() => null);
     return proposalError(error, res);

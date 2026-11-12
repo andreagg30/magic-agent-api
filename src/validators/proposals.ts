@@ -141,12 +141,6 @@ export const saveProposalValidator = [
     .optional(optional)
     .isString()
     .withMessage("El nombre de la imagen debe ser texto"),
-  body("images.*.src")
-    .optional(optional)
-    .isString()
-    .withMessage("src de la imagen debe ser texto")
-    .isURL({ require_protocol: true })
-    .withMessage("src debe ser una URL completa válida"),
   body("showParty")
     .optional({ nullable: true })
     .isBoolean({ strict: true })

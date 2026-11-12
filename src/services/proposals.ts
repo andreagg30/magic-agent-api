@@ -158,7 +158,7 @@ const select = async (id: string, payload: ProposalSelectionPayload, client: Poo
     "SELECT select_proposal($1::uuid, $2::jsonb) AS selected",
     [id, JSON.stringify(payload)],
   );
-  return result.rows[0]?.selected === true;
+  return (result.rows[0]?.selected as string | null) ?? null;
 };
 
 export default { create, update, getAll, getById, getByResponseId, remove, select };
