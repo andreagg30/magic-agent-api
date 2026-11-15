@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { pool } from "../database/db-connection.js";
 import proposalService from "../services/proposals.js";
+import mailService from "../services/mails.js";
 import { sendError, sendSuccess } from "../utils/api-response.js";
 
 function proposalError(error: any, res: Response) {
@@ -134,7 +135,14 @@ async function select(req: Request, res: Response) {
       return sendError({ res, statusCode: 404, message: "ProposalNotFound" });
     }
     await client.query("COMMIT");
-    return sendSuccess({ res, message: "ProposalSelected", data: { proposalId } });
+    let emailSent = false;
+    try {
+      await mailService.sendProposalSelected({ email: req.body.email, proposalId });
+      emailSent = true;
+    } catch (error) {
+      console.error("Proposal confirmation email failed", { proposalId, error });
+    }
+    return sendSuccess({ res, message: "ProposalSelected", data: { proposalId, emailSent } });
   } catch (error) {
     await client.query("ROLLBACK").catch(() => null);
     return proposalError(error, res);

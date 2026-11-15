@@ -76,6 +76,7 @@ BEGIN
 
   DELETE FROM proposal_options WHERE proposal_id = v_target_id;
   UPDATE proposals SET
+    email = NULLIF(TRIM(p_payload->>'email'), ''),
     billing_country_value = p_payload->'billingAddress'->'country'->>'value',
     billing_country_label = p_payload->'billingAddress'->'country'->>'label',
     billing_line1 = p_payload->'billingAddress'->>'line1',

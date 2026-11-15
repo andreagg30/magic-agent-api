@@ -4,6 +4,7 @@ CREATE TABLE proposals (
   response_id UUID REFERENCES form_responses(id) ON DELETE SET NULL,
   name VARCHAR(100),
   description TEXT,
+  email VARCHAR(254),
   total NUMERIC(14, 2),
   billing_country_value TEXT,
   billing_country_label TEXT,

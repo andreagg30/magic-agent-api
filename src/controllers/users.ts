@@ -301,7 +301,24 @@ async function remove(req: AuthRequest, res: Response) {
   }
 }
 
+async function getDashboard(req: AuthRequest, res: Response) {
+  try {
+    if (!req.user?.userId) {
+      return sendError({ res, statusCode: 401, message: "Unauthorized" });
+    }
+    const dashboard = await userService.getDashboard(req.user.userId);
+    if (!dashboard) {
+      return sendError({ res, statusCode: 404, message: "UserNotFound" });
+    }
+    return sendSuccess({ res, data: dashboard });
+  } catch (error) {
+    console.error(error);
+    return sendError({ res });
+  }
+}
+
 export default {
+  getDashboard,
   getByIdWithProposals,
   update,
   remove,

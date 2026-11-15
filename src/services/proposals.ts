@@ -139,6 +139,7 @@ export type SelectedProposalOption = {
 };
 
 export type ProposalSelectionPayload = {
+  email: string;
   selectedVariation: SelectedProposalOption | null;
   selectedExtras: SelectedProposalOption[];
   party: unknown[];

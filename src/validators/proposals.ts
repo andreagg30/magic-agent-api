@@ -3,6 +3,7 @@ import { body, param, query } from "express-validator";
 const optional = { nullable: true, checkFalsy: true } as const;
 
 export const selectProposalValidator = [
+  body("email").isString().bail().trim().isEmail().isLength({ max: 254 }),
   body("selectedVariation").exists({ values: "undefined" }).bail()
     .custom((value) => value === null || (typeof value === "object" && !Array.isArray(value))),
   body("selectedExtras").isArray(),

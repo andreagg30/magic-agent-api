@@ -29,6 +29,7 @@ AS $$
     'responseId', p.response_id,
     'name', p.name,
     'description', p.description,
+    'email', p.email,
     'users', COALESCE((
       SELECT jsonb_agg(jsonb_build_object(
         'id', u.id,

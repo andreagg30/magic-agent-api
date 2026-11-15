@@ -108,7 +108,13 @@ const deleteOneUser = async (userId: string) => {
   return result.rows[0].deleted;
 };
 
+const getDashboard = async (userId: string) => {
+  const result = await pool.query("SELECT get_user_dashboard($1::uuid) AS dashboard", [userId]);
+  return result.rows[0]?.dashboard;
+};
+
 export default {
+  getDashboard,
   getAll,
   getUserLogin,
   signUp,

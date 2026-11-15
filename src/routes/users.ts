@@ -20,6 +20,7 @@ router.post(
 );
 
 router.get("/getProfile", requireAuth, userController.getUserById);
+router.get("/me/dashboard", requireAuth, userController.getDashboard);
 
 router.get("/:id", requireAuth, userIdValidator, validateRequest, userController.getByIdWithProposals);
 router.put("/:id", requireAuth, userIdValidator, updateUserValidator, validateRequest, userController.update);
