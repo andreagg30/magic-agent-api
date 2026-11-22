@@ -7,6 +7,7 @@ CREATE TABLE forms (
   email VARCHAR(255),
   second_email VARCHAR(255),
   description TEXT,
+  image TEXT,
   is_active BOOLEAN NOT NULL DEFAULT TRUE,
   show_appbar BOOLEAN NOT NULL DEFAULT FALSE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),

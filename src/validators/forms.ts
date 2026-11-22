@@ -44,6 +44,10 @@ export const saveFormValidator = [
     .optional({ nullable: true })
     .isString()
     .withMessage("La descripción debe ser texto"),
+  body("image")
+    .optional({ values: "null" })
+    .isString()
+    .withMessage("image debe ser texto"),
   body("isActive")
     .isBoolean()
     .withMessage("isActive debe ser booleano"),

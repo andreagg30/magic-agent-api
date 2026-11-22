@@ -13,6 +13,7 @@ SELECT jsonb_build_object(
     'email', f.email,
     'secondEmail', f.second_email,
     'description', f.description,
+    'image', f.image,
     'isActive', f.is_active,
     'showAppbar', f.show_appbar,
     'sections', COALESCE(sections.sections, '[]'::jsonb),

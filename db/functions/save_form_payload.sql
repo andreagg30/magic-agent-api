@@ -27,6 +27,7 @@ BEGIN
             email = NULLIF(LOWER(TRIM(p_payload->>'email')), ''),
             second_email = NULLIF(LOWER(TRIM(p_payload->>'secondEmail')), ''),
             description = NULLIF(p_payload->>'description', ''),
+            image = NULLIF(TRIM(p_payload->>'image'), ''),
             is_active = COALESCE((p_payload->>'isActive')::boolean, TRUE),
             show_appbar = COALESCE((p_payload->>'showAppbar')::boolean, FALSE)
         WHERE id = v_form_id;
@@ -42,6 +43,7 @@ BEGIN
             email,
             second_email,
             description,
+            image,
             is_active,
             show_appbar
         ) VALUES (
@@ -52,6 +54,7 @@ BEGIN
             NULLIF(LOWER(TRIM(p_payload->>'email')), ''),
             NULLIF(LOWER(TRIM(p_payload->>'secondEmail')), ''),
             NULLIF(p_payload->>'description', ''),
+            NULLIF(TRIM(p_payload->>'image'), ''),
             COALESCE((p_payload->>'isActive')::boolean, TRUE),
             COALESCE((p_payload->>'showAppbar')::boolean, FALSE)
         ) RETURNING id INTO v_form_id;
