@@ -57,6 +57,8 @@ export type ProposalPayload = {
   description?: string | null;
   users?: string[] | null;
   total?: string | number | null;
+  expirationDate?: string | null;
+  oldPrice?: string | number;
   totalType?: number | null;
   statusId?: number | null;
   style?: number | null;

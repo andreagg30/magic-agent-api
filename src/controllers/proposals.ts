@@ -58,6 +58,25 @@ async function getAll(req: Request, res: Response) {
   }
 }
 
+async function getPublicPackages(_req: Request, res: Response) {
+  try {
+    const packages = await proposalService.getAll(true, undefined, false);
+    const proposals = packages
+      .filter((proposal) => proposal.isActive === true)
+      .map(({
+        id, name, description, total, expirationDate, oldPrice, totalType, style, images,
+        isPackage, isActive, showMainPage, addExtras, addVariations,
+      }) => ({
+        id, name, description, total, expirationDate, oldPrice, totalType, style, images,
+        isPackage, isActive, showMainPage, addExtras, addVariations,
+      }));
+    return sendSuccess({ res, data: { proposals } });
+  } catch (error) {
+    console.error(error);
+    return sendError({ res });
+  }
+}
+
 async function getById(req: Request, res: Response) {
   try {
     const proposal = await proposalService.getById(req.params.id as string);
@@ -151,4 +170,4 @@ async function select(req: Request, res: Response) {
   }
 }
 
-export default { create, getAll, getById, getByResponseId, update, remove, select };
+export default { create, getAll, getPublicPackages, getById, getByResponseId, update, remove, select };

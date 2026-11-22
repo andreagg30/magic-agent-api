@@ -11,6 +11,7 @@ DECLARE
 BEGIN
   INSERT INTO proposals (
     parent_id, response_id, name, description, total, total_type_id, status_id, style_id,
+    expiration_date, old_price,
     is_active, is_package, show_main_page, show_party, notes, gral_party_number,
     gral_party_children
   ) VALUES (
@@ -22,6 +23,9 @@ BEGIN
     NULLIF(p_payload->>'totalType', '')::INTEGER,
     NULLIF(p_payload->>'statusId', '')::INTEGER,
     (p_payload->>'style')::INTEGER,
+    (p_payload->>'expirationDate')::TIMESTAMPTZ,
+    CASE WHEN p_payload ? 'oldPrice'
+      THEN (p_payload->>'oldPrice')::NUMERIC(14, 2) ELSE 0 END,
     (p_payload->>'isActive')::BOOLEAN,
     NULLIF(p_payload->>'isPackage', '')::BOOLEAN,
     NULLIF(p_payload->>'showMainPage', '')::BOOLEAN,

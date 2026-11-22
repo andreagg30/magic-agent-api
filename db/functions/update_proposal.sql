@@ -13,6 +13,10 @@ BEGIN
     name = NULLIF(p_payload->>'name', ''),
     description = NULLIF(p_payload->>'description', ''),
     total = NULLIF(p_payload->>'total', '')::NUMERIC(14, 2),
+    expiration_date = CASE WHEN p_payload ? 'expirationDate'
+      THEN (p_payload->>'expirationDate')::TIMESTAMPTZ ELSE expiration_date END,
+    old_price = CASE WHEN p_payload ? 'oldPrice'
+      THEN (p_payload->>'oldPrice')::NUMERIC(14, 2) ELSE old_price END,
     total_type_id = NULLIF(p_payload->>'totalType', '')::INTEGER,
     status_id = NULLIF(p_payload->>'statusId', '')::INTEGER,
     style_id = CASE WHEN p_payload ? 'style'

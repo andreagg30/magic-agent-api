@@ -49,6 +49,8 @@ AS $$
       WHERE pu.proposal_id = p.id
     ), '[]'::JSONB),
     'total', p.total,
+    'expirationDate', p.expiration_date,
+    'oldPrice', p.old_price,
     'billingAddress', CASE WHEN p.billing_line1 IS NULL THEN NULL ELSE jsonb_build_object(
       'country', CASE WHEN p.billing_country_value IS NULL THEN NULL ELSE jsonb_build_object(
         'value', p.billing_country_value, 'label', p.billing_country_label

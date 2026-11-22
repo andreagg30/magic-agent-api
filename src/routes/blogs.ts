@@ -10,6 +10,14 @@ import {
 
 const router = Router();
 
+router.get(
+  "/",
+  (req, _res, next) => {
+    if (req.query.isActive === "true") return next();
+    next("route");
+  },
+  blogController.getAll,
+);
 router.use(requireAuth);
 router.get(
   "/",

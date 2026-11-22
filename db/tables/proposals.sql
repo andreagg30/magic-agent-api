@@ -6,6 +6,8 @@ CREATE TABLE proposals (
   description TEXT,
   email VARCHAR(254),
   total NUMERIC(14, 2),
+  expiration_date TIMESTAMPTZ,
+  old_price NUMERIC(14, 2) NOT NULL DEFAULT 0,
   billing_country_value TEXT,
   billing_country_label TEXT,
   billing_line1 TEXT,

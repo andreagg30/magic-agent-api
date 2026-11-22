@@ -11,6 +11,21 @@ import {
 } from "../validators/proposals.js";
 const router = Router();
 
+router.get(
+  "/",
+  (req, _res, next) => {
+    const { isPackage, isReservation, parentId } = req.query;
+    if (
+      isPackage === "true" &&
+      parentId === undefined &&
+      (isReservation === undefined || isReservation === "false")
+    ) {
+      return next();
+    }
+    next("route");
+  },
+  proposalController.getPublicPackages,
+);
 router.use(requireAuth);
 router.post(
   "/:id/selection",

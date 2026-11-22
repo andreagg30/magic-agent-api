@@ -107,6 +107,22 @@ export const saveProposalValidator = [
     .withMessage("total debe ser un número con máximo 2 decimales")
     .custom((value) => Math.abs(Number(value)) < 1_000_000_000_000)
     .withMessage("total excede el máximo permitido"),
+  body("expirationDate")
+    .optional({ values: "null" })
+    .isString()
+    .bail()
+    .isISO8601({ strict: true, strictSeparator: true })
+    .withMessage("expirationDate debe tener formato ISO 8601")
+    .bail()
+    .matches(/T\d{2}:\d{2}(?::\d{2}(?:[.,]\d+)?)?(?:Z|[+-]\d{2}:?\d{2})$/)
+    .withMessage("expirationDate debe incluir hora y zona horaria"),
+  body("oldPrice")
+    .optional()
+    .isDecimal({ decimal_digits: "0,2" })
+    .withMessage("oldPrice debe ser un número con máximo 2 decimales")
+    .bail()
+    .custom((value) => Math.abs(Number(value)) < 1_000_000_000_000)
+    .withMessage("oldPrice excede el máximo permitido"),
   body("totalType")
     .optional(optional)
     .isInt()
